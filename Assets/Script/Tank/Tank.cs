@@ -46,11 +46,20 @@ public class AI_TankMoveTo : AITask{
     }
 
     public override void DrawDebugGizmo(){
-        Gizmos.color = Color.green;
-        Gizmos.DrawSphere(_Caller.gameObject.transform.position,0.5f);
 
-        foreach (var corner in NavPath.corners){
-            Gizmos.DrawSphere(corner,0.2f);
+        for (int i = 0; i < NavPath.corners.Length; i++){
+            if (i < PathIndex){
+                Gizmos.color = new Color(0,0,0,0.5f);
+            }
+            else if ( i > PathIndex){
+                Gizmos.color = new Color(0,1,0,0.5f);
+            }
+            else{
+                Gizmos.color = new Color(1,1,0,0.75f);
+            }
+
+            Gizmos.DrawSphere(NavPath.corners[i],0.2f);
+
         }
 
         var pathdraw = new NavPathDebugDraw(NavPath);

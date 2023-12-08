@@ -12,6 +12,8 @@ public class PlayerTank : Tank
     public GameCamera _GameCamera;
 
     private Gun _TankGun;
+
+    public VisionGrid VisionGrid;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,6 +23,8 @@ public class PlayerTank : Tank
         _TankGun = GetComponentInChildren<Gun>();
 
         CharacterTag = "PlayerTank";
+
+        VisionGrid = new VisionGrid(gameObject);
     }
 
     // Update is called once per frame
@@ -30,10 +34,18 @@ public class PlayerTank : Tank
         _HandleAimInput();
         _TurnTurrets();
 
+        VisionGrid.UpdatePoints(this.transform.position);
+
     }
 
     void LateUpdate(){
         _GameCamera.UpdateTransform();
+    }
+
+    void OnDrawGizmos(){
+        if (VisionGrid != null){
+            VisionGrid.DrawDebugGizmo();
+        }
     }
 
     private void _HandleMoveInput(){
@@ -41,7 +53,6 @@ public class PlayerTank : Tank
         var InputVector = _PlayerCon.MoveVector;
 
         Vector3 CamEuler = _GameCamera.transform.rotation.eulerAngles;
-
 
         var MoveVector = new Vector3(
             InputVector.x,
@@ -76,7 +87,5 @@ public class PlayerTank : Tank
         if (_PlayerCon.Fire > 0.1f){
             var hasFired = _TankGun.Fire();
         }
-
-        
     }
 }
