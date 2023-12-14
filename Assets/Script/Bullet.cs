@@ -9,7 +9,8 @@ public class Bullet : MonoBehaviour
 {
     
     private Quaternion Direction = Quaternion.identity;
-    public float LifeTime = 10.0f;
+    
+    public float LifeTime = 0.5f;
     public float Speed;
     public float DamageValue = 0.1f;
     protected Rigidbody _RigidBody;

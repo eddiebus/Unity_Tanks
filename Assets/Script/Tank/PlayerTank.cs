@@ -17,12 +17,13 @@ public class PlayerTank : Tank
     // Start is called before the first frame update
     void Start()
     {
+        var test = GameManager.Instance;
         base._TankInit();
         _PlayerCon = this.GetComponent<PlayerController>();
         _GameCamera = GetComponentInChildren<GameCamera>();
         _TankGun = GetComponentInChildren<Gun>();
 
-        CharacterTag = "PlayerTank";
+        this.gameObject.tag = Character.GameObjectTagName;
 
         VisionGrid = new VisionGrid(gameObject);
     }
@@ -35,20 +36,30 @@ public class PlayerTank : Tank
         _TurnTurrets();
 
         VisionGrid.UpdatePoints(this.transform.position);
-
     }
 
-    void LateUpdate(){
+    void LateUpdate()
+    {
         _GameCamera.UpdateTransform();
     }
 
-    void OnDrawGizmos(){
-        if (VisionGrid != null){
+    void OnDrawGizmos()
+    {
+        if (VisionGrid != null)
+        {
             VisionGrid.DrawDebugGizmo();
+        }
+
+        if (_GameCamera)
+        {
+            Vector3 AimPoint = _GameCamera.GetWorldAimPoint();
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(AimPoint, 0.3f);
         }
     }
 
-    private void _HandleMoveInput(){
+    private void _HandleMoveInput()
+    {
         if (!_PlayerCon || !_GameCamera) return;
         var InputVector = _PlayerCon.MoveVector;
 
@@ -62,13 +73,14 @@ public class PlayerTank : Tank
 
 
         MoveVector = Quaternion.Euler(
-            new Vector3(0,CamEuler.y,0)
+            new Vector3(0, CamEuler.y, 0)
         ) * MoveVector;
 
-        MoveTo( transform.position + MoveVector);
+        MoveTo(transform.position + MoveVector);
     }
 
-    private void _HandleAimInput(){
+    private void _HandleAimInput()
+    {
         if (!_PlayerCon || !_GameCamera) return;
 
         var Cameuler = _GameCamera.GetRotation().eulerAngles;
@@ -81,10 +93,11 @@ public class PlayerTank : Tank
 
         _GameCamera.Rotate(_PlayerCon.AimVector);
 
-        AimVector = Quaternion.AngleAxis(Cameuler.y,Vector3.up) * AimVector;
+        AimVector = Quaternion.AngleAxis(Cameuler.y, Vector3.up) * AimVector;
         AimAt(_GameCamera.GetWorldAimPoint());
 
-        if (_PlayerCon.Fire > 0.1f){
+        if (_PlayerCon.Fire > 0.1f)
+        {
             var hasFired = _TankGun.Fire();
         }
     }

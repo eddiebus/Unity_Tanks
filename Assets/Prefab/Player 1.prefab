@@ -113,12 +113,14 @@ GameObject:
   - component: {fileID: 2363449873624815092}
   - component: {fileID: 3763672745485023899}
   - component: {fileID: 8081108940840868987}
+  - component: {fileID: 6700190138183945032}
   - component: {fileID: 8915941958062851470}
   - component: {fileID: 5330163009829979595}
   - component: {fileID: 6835082164166461805}
+  - component: {fileID: 6325123730052735561}
   m_Layer: 6
   m_Name: Player 1
-  m_TagString: Untagged
+  m_TagString: Character
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -192,6 +194,21 @@ CapsuleCollider:
   m_Height: 1
   m_Direction: 2
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6700190138183945032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3426833590062254002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73468d961d447fa4981ae1310df1f7b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Health: 1
+  CharacterTag: Player
+  EnemyCharacters: []
 --- !u!114 &8915941958062851470
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -218,8 +235,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70b36e3e94d4b434893192fc8ff7ac03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Health: 1
-  CharacterTag: Player
   MoveSpeed: 1
   TurnSpeed: 2
   TurretTurnSpeed: 1
@@ -245,6 +260,20 @@ MonoBehaviour:
   m_IgnoreFromBuild: 1
   m_ApplyToChildren: 1
   m_AffectedAgents: ffffffff
+--- !u!114 &6325123730052735561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3426833590062254002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48250861c683e8048951a4537742a465, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Type: 0
+  Tag: 0
 --- !u!1 &4121506973636572919
 GameObject:
   m_ObjectHideFlags: 0

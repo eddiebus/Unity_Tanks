@@ -36,7 +36,7 @@ public class AI : MonoBehaviour
     protected virtual void HandleAICycle()
     {
 
-    }
+    } 
 
     protected void ExecuteAITask(AITask NewTask)
     {

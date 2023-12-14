@@ -49,7 +49,7 @@ public class GameCamera : MonoBehaviour
             AimPoint = hitInfo.point;
         }
 
-        Debug.DrawLine(transform.position,AimPoint,Color.green);
+        
         return AimPoint;
     }
     
@@ -77,5 +77,9 @@ public class GameCamera : MonoBehaviour
     {
         UpdateTransform();
         ClampRotation();
+    }
+
+    void OnDrawGizmos(){
+        Debug.DrawLine(transform.position,GetWorldAimPoint(),Color.green);
     }
 }

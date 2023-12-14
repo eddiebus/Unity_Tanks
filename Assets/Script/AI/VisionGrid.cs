@@ -45,7 +45,6 @@ public class VisionGrid
         Points.Clear();
         float posOffset = GridSize / (float)CellPerRow;
 
-        Debug.Log($"PosOffset = {posOffset}");
         CellSize = posOffset * 0.2f;
 
         for (int z = 0; z < CellPerRow; z++)

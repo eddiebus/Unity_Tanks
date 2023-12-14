@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 4.284121, y: 1.8542126, z: -3}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -97,7 +97,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec621f7fe1a93c1489ceb35d78cc614a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LifeTime: 4
+  LifeTime: 1
   Speed: 30
   DamageValue: 0.1
   FriendlyCharacters:
@@ -121,7 +121,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.14968604
-  m_Height: 0.5
+  m_Radius: 0.12
+  m_Height: 0
   m_Direction: 2
   m_Center: {x: 0, y: 0, z: 0}
