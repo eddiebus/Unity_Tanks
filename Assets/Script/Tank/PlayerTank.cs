@@ -13,6 +13,9 @@ public class PlayerTank : Tank
 
     private Gun _TankGun;
 
+    [Range(0.1f, 1.0f)]
+    public float VisionUpdateTime = 0.5f;
+    private float _CurrentVisionUpdateTime;
     public VisionGrid VisionGrid;
     // Start is called before the first frame update
     void Start()
@@ -26,6 +29,8 @@ public class PlayerTank : Tank
         this.gameObject.tag = Character.GameObjectTagName;
 
         VisionGrid = new VisionGrid(gameObject);
+        _CurrentVisionUpdateTime = 0.0f;
+
     }
 
     // Update is called once per frame
@@ -35,7 +40,14 @@ public class PlayerTank : Tank
         _HandleAimInput();
         _TurnTurrets();
 
-        VisionGrid.UpdatePoints(this.transform.position);
+        if (_CurrentVisionUpdateTime <= 0)
+        {
+            _CurrentVisionUpdateTime = VisionUpdateTime;
+            VisionGrid.UpdatePoints(this.transform.position);
+        }
+        else {
+            _CurrentVisionUpdateTime -= Time.deltaTime;
+        }
     }
 
     void LateUpdate()
@@ -53,8 +65,14 @@ public class PlayerTank : Tank
         if (_GameCamera)
         {
             Vector3 AimPoint = _GameCamera.GetWorldAimPoint();
+
+
+            float AimSphereGizmoSize = 0.3f;
             Gizmos.color = Color.red;
-            Gizmos.DrawSphere(AimPoint, 0.3f);
+            Gizmos.DrawSphere(AimPoint, AimSphereGizmoSize);
+
+            Gizmos.color = new Color(0,1,0,0.5f);
+            Gizmos.DrawSphere(GetCurrentAimPoint(), AimSphereGizmoSize * 1.2f);
         }
     }
 
@@ -98,7 +116,29 @@ public class PlayerTank : Tank
 
         if (_PlayerCon.Fire > 0.1f)
         {
-            var hasFired = _TankGun.Fire();
+            _TankGun.Fire();
         }
+    }
+
+    public Vector3 GetCurrentAimPoint(){
+        var endPoint = (_TurretQuat * (Vector3.forward * 1000.0f)) + transform.position;
+        Ray HitRay = new Ray();
+        HitRay.origin = transform.position;
+        HitRay.direction = _TurretQuat * Vector3.forward;
+
+
+        RaycastHit HitInfo;
+        bool visionhit = Physics.Raycast(HitRay,out HitInfo, 1000.0f, _GameCamera.AimPointCollision);
+
+        if (visionhit){
+            return HitInfo.point;
+        }
+        else{
+            return endPoint;
+        }
+    }
+
+    public Vector3 GetTargetAimPoint(){
+        return _GameCamera.GetWorldAimPoint();
     }
 }

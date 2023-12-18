@@ -12,6 +12,8 @@ public class AI_EnemyTank : AI
 
     private float Alert = 0.0f;
     private GameObject SpottedPlayer;
+
+    public float FireRange = 3.0f;
     // Start is called before the first frame update
     void Start()
     {
@@ -54,7 +56,8 @@ public class AI_EnemyTank : AI
         if (!_Tank) return;
         AITick();
 
-        if (Alert > 0){
+        if (Alert > 0)
+        {
             Alert -= Time.deltaTime / 10;
         }
     }
@@ -73,23 +76,33 @@ public class AI_EnemyTank : AI
                 var MoveTask = new AI_TankMoveTo(_Tank, NavMeshPoint.position);
                 ExecuteAITask(MoveTask);
             }
+
+            _Tank.AimAt(_Tank.transform.position + _Tank.transform.forward * 10);
         }
-        else{
-            // Move near to Player
-            float maxDistance = 5.0f;
+        else
+        {
             var PlayerPos = _EnemyComp.Player.transform.position;
+            var VectorToPlayer = _EnemyComp.Player.transform.position - this.transform.position;
+            var DistanceToPlayer = VectorToPlayer.magnitude;
 
-            NavMeshHit NavMeshPoint;
-            NavMesh.SamplePosition(PlayerPos,out NavMeshPoint,20.0f,NavMesh.AllAreas);
+            if (DistanceToPlayer > FireRange)
+            {
+                var DirToSelf = -VectorToPlayer.normalized;
+                var TargetPos = PlayerPos + (DirToSelf * FireRange);
+                NavMeshHit NavMeshPoint;
+                NavMesh.SamplePosition(TargetPos, out NavMeshPoint, 20.0f, NavMesh.AllAreas);
 
-            if (NavMeshPoint.hit){
-                var MoveTask = new AI_TankMoveTo(_Tank, NavMeshPoint.position);
-                ExecuteAITask(MoveTask);
+                if (NavMeshPoint.hit)
+                {
+                    var MoveTask = new AI_TankMoveTo(_Tank, NavMeshPoint.position);
+                    ExecuteAITask(MoveTask);
+                }
+            }
+            else
+            {
+                _Tank.AimAt(PlayerPos);
             }
         }
-
-        _Tank.AimAt(_Tank.transform.position + _Tank.transform.forward * 10);
-
 
 
     }

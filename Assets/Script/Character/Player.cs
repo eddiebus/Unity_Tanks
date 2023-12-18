@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class Player : Character
 {
+    public static Player InstanceObj  {
+        get {
+            return GameObject.FindFirstObjectByType<Player>();
+        }
+    }
     public List<Character> EnemyCharacters;
     // Start is called before the first frame update
     void Start()

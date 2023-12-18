@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Gun : MonoBehaviour
@@ -8,10 +9,12 @@ public class Gun : MonoBehaviour
     protected float _FireDelay;
 
     public GameObject BulletPrefab;
+    public List<AudioClip> FireSfx;
+    private AudioSource _AudioSource;
     // Start is called before the first frame update
     void Start()
     {
-        
+        _AudioSource = gameObject.AddComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -38,7 +41,15 @@ public class Gun : MonoBehaviour
             var newBullet = GameObject.Instantiate(BulletPrefab,this.transform.position,Quaternion.identity);
             var BulletComp = newBullet.GetComponent<Bullet>();
             BulletComp.SetDirection(this.transform.rotation);
+            if (FireSfx.Count > 0){
+                System.Random numGen = new System.Random();
+                var selectIndex = (int) (numGen.NextDouble() * (FireSfx.Count - 1));
 
+                AudioClip toPlay = FireSfx[selectIndex];
+                _AudioSource.clip = toPlay;
+                _AudioSource.volume = 0.5f;
+                _AudioSource.Play();
+            }
             _FireDelay = FireDelay;
 
             return true;

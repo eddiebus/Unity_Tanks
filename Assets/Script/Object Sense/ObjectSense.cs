@@ -1,26 +1,24 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Events;
-
-
 
 
 public sealed class ObjectSense : MonoBehaviour
 {
     [Range(0.1f, 3.0f)]
     public float UpdateTime = 0.5f;
+    public float EyeHeight = 0.5f;
     public float SightDistance;
-    [Range(0.0f,180.0f)]
+    [Range(0.0f, 180.0f)]
     public float SightRadius;
 
     public float HearingRadius;
 
     private float _TimeTillUpdate;
     public List<ObjectStimuli> CurrentStimuli;
+
+    public List<Transform> EyePoints;
 
     public Action OnStimuliUpdate;
     // Start is called before the first frame update
@@ -43,6 +41,11 @@ public sealed class ObjectSense : MonoBehaviour
             OnStimuliUpdate.Invoke();
         }
 
+    }
+
+    private Vector3 GetEyePoint()
+    {
+        return transform.position + (transform.up * EyeHeight);
     }
 
     public List<ObjectStimuli> GetStimuliWithTag(StimuliTag TargetTag)
@@ -71,16 +74,12 @@ public sealed class ObjectSense : MonoBehaviour
         CurrentStimuli.Clear();
         var NearbyObjs = Physics.OverlapBox(
         this.transform.position,
-        Vector3.one * 100.0f
+        Vector3.one * (SightDistance + HearingRadius)
         );
-
 
         foreach (var Collision in NearbyObjs)
         {
-
-
             var obj = Collision.gameObject;
-
             var Stimuli = obj.GetComponentInChildren<ObjectStimuli>();
 
             if (Stimuli)
@@ -99,13 +98,40 @@ public sealed class ObjectSense : MonoBehaviour
                         }
                     case ObjectStimuliType.Vision:
                         {
-                            var StimuliRelPos = Stimuli.transform.position - transform.position;
-                            var StimuliDistance = StimuliRelPos.magnitude;
-                            var QuatToStimuli = Quaternion.LookRotation(StimuliRelPos);
-                            var AngleToStimuli = Quaternion.Angle(transform.rotation,QuatToStimuli);
+                            List<Transform> eyePoints = new List<Transform>(EyePoints);
 
-                            // Stimuli is in range and Angle.
-                            if (StimuliDistance < SightDistance && AngleToStimuli < SightRadius/2.0f)
+                            // No Manual eye points. Default to root transform
+                            if (eyePoints.Count == 0)
+                            {
+                                eyePoints.Add(this.transform);
+                            }
+
+                            bool ToAdd = false;
+
+                            //Loop eyePoints
+                            foreach (var point in eyePoints)
+                            {
+                                var StimuliRelPos = Stimuli.transform.position - point.position;
+                                var StimuliDistance = StimuliRelPos.magnitude;
+                                var QuatToStimuli = Quaternion.LookRotation(StimuliRelPos);
+                                var AngleToStimuli = Quaternion.Angle(point.rotation, QuatToStimuli);
+
+                                Ray VisionRay = new Ray();
+                                VisionRay.origin = point.position;
+                                VisionRay.direction = StimuliRelPos.normalized;
+
+                                bool Visible = !Physics.Raycast(VisionRay, StimuliDistance, 0 << 0);
+
+                                if (
+                                    StimuliDistance < SightDistance &&
+                                    AngleToStimuli < SightRadius / 2.0f &&
+                                    Visible)
+                                {
+                                    ToAdd = true;
+                                }
+                            }
+
+                            if (ToAdd)
                             {
                                 CurrentStimuli.Add(Stimuli);
                             }
@@ -125,30 +151,39 @@ public sealed class ObjectSense : MonoBehaviour
         if (SelectObj == null) return;
         else
         if (SelectObj != this.gameObject && !SelectObj.transform.IsChildOf(this.gameObject.transform)) return;
-    
-        Vector3 VisionForward = Vector3.forward * SightDistance;
-        var VisionWidth = (Quaternion.AngleAxis(SightRadius / 2.0f, Vector3.up) * VisionForward).x;
-        Vector3 LVisionPoint = this.transform.rotation * new Vector3(-VisionWidth, 0, SightDistance);
-        Vector3 RVisionPoint = this.transform.rotation * new Vector3(VisionWidth, 0, SightDistance);
 
-        LVisionPoint += transform.position;
-        RVisionPoint += transform.position;
+        List<Transform> eyePoints = new List<Transform>(EyePoints);
+        if (EyePoints.Count == 0)
+        {
+            eyePoints.Add(transform);
+        }
 
-        Vector3[] DrawPoints =  {
-            transform.position,
+        foreach (var eye in eyePoints)
+        {
+            Vector3 VisionForward = Vector3.forward * SightDistance;
+            var VisionWidth = (Quaternion.AngleAxis(SightRadius / 2.0f, Vector3.up) * VisionForward).x;
+            Vector3 LVisionPoint = eye.rotation * new Vector3(-VisionWidth, 0, SightDistance);
+            Vector3 RVisionPoint = eye.rotation * new Vector3(VisionWidth, 0, SightDistance);
+
+            LVisionPoint += eye.position;
+            RVisionPoint += eye.position;
+
+            Vector3[] DrawPoints =  {
+            eye.position,
             LVisionPoint,
             LVisionPoint,
             RVisionPoint,
             RVisionPoint,
-            transform.position
-        };
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawLineList(DrawPoints);
+            eye.position
+            };
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawLineList(DrawPoints);
+        }
 
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, HearingRadius);
 
-
+        if (CurrentStimuli == null) return;
         foreach (var stimulus in CurrentStimuli)
         {
             if (stimulus.Type == ObjectStimuliType.Vision)

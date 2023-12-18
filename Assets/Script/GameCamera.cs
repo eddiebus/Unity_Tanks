@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 
 public class GameCamera : MonoBehaviour
 {
-    private Camera _CamComp;
+    public Camera _CamComp;
     public Vector3 PositionOffset;
     private Vector3 LookAngle;
     public float XRotationLimit = 80;

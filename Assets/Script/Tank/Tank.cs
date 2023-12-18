@@ -21,7 +21,6 @@ public class AI_TankMoveTo : AITask
         _Caller = Caller;
         _TargetPosition = TargetPosition;
 
-
         try
         {
             NavMesh.CalculatePath(_Caller.transform.position, _TargetPosition,
@@ -126,7 +125,7 @@ public class Tank : MonoBehaviour
     protected Rigidbody _RigidBody;
 
     private Vector3 AimPoint;
-    private Quaternion _TurretQuat = Quaternion.identity;
+    protected Quaternion _TurretQuat = Quaternion.identity;
     private Quaternion _TargetTurretQuat;
 
     // Obj turrets are rigged to aim at
@@ -184,6 +183,8 @@ public class Tank : MonoBehaviour
 
         if (MoveVector != Vector3.zero)
         {
+
+            
             Quaternion TargetBodyRot = Quaternion.RotateTowards(
                 _RigidBody.rotation,
                 Quaternion.LookRotation(MoveVector, floorFinder.FloorNormal),
@@ -200,6 +201,20 @@ public class Tank : MonoBehaviour
         AimPoint = Target;
     }
 
+    public void TurnBodyTo(Vector3 TargetPos){
+        var relVector = TargetPos = transform.position;
+
+        if (relVector != Vector3.zero){
+            var floorFinder = new FloorFinder(_RigidBody);
+            Quaternion TargetBodyRot = Quaternion.RotateTowards(
+                _RigidBody.rotation,
+                Quaternion.LookRotation(relVector, floorFinder.FloorNormal),
+                TurnSpeed * (Time.deltaTime * 100)
+            );
+
+            _RigidBody.MoveRotation(TargetBodyRot);
+        }
+    }
 
     protected void _TurnTurrets()
     {
