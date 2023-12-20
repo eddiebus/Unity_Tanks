@@ -17,7 +17,6 @@ GameObject:
   - component: {fileID: 6835082164166461805}
   - component: {fileID: 6325123730052735561}
   - component: {fileID: 4602295344658850380}
-  - component: {fileID: 7825744029132183933}
   m_Layer: 6
   m_Name: Player
   m_TagString: Character
@@ -139,6 +138,9 @@ MonoBehaviour:
   TurretAimControl: {fileID: 8176220431269259703}
   _PlayerCon: {fileID: 0}
   _GameCamera: {fileID: 0}
+  ScopeSpeed: 7.11
+  StartScopeFov: 90
+  EndScopeFov: 40
   VisionUpdateTime: 0.534
 --- !u!114 &6835082164166461805
 MonoBehaviour:
@@ -192,14 +194,6 @@ MonoBehaviour:
   HearingRadius: 0
   CurrentStimuli: []
   EyePoints: []
---- !u!81 &7825744029132183933
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3426833590062254002}
-  m_Enabled: 1
 --- !u!1 &5432096808985778116
 GameObject:
   m_ObjectHideFlags: 0
@@ -279,7 +273,7 @@ Transform:
   m_GameObject: {fileID: 6792024895814177179}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1, y: 0.5, z: -1.2}
+  m_LocalPosition: {x: 1, y: 0.5, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -357,12 +351,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _CamComp: {fileID: 0}
-  PositionOffset: {x: 0, y: 0, z: 0}
+  FOVsetup:
+    UpdateSpeed: 0
+    DefaultFOV: 0
+    ADSfov: 0
   XRotationLimit: 45
   RotationSensitivity: 2
-  AimPointCollision:
+  VisionLayerMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 81
+  PostProcessEffect: {fileID: 2100000, guid: 9d04e98aebcc16648b7c39c2d69a312c, type: 2}
+  ShaderPixels: 3000
+  ShaderOutline: 2
+  ShaderSetup:
+    Pixels: 4000
+    OutlineSize: 6
+    CameraDepth: 0
 --- !u!1 &8176220431269259703
 GameObject:
   m_ObjectHideFlags: 0
@@ -452,7 +456,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -6437832087217251294, guid: 24e97c44d8073144e89de16ae2ef545f, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.0000024342955
+      value: -0.0000039323236
       objectReference: {fileID: 0}
     - target: {fileID: -6437832087217251294, guid: 24e97c44d8073144e89de16ae2ef545f, type: 3}
       propertyPath: m_LocalRotation.z
@@ -530,8 +534,8 @@ AimConstraint:
   m_Enabled: 1
   serializedVersion: 2
   m_Weight: 1
-  m_RotationAtRest: {x: -0.00027894956, y: -0, z: 0}
-  m_RotationOffset: {x: -8.130388, y: 0, z: 0}
+  m_RotationAtRest: {x: -0.00045061082, y: -0, z: 0}
+  m_RotationOffset: {x: -8.130561, y: 0, z: 0}
   m_AimVector: {x: 0, y: 0, z: 1}
   m_UpVector: {x: 0, y: 1, z: 0}
   m_WorldUpVector: {x: 0, y: 1, z: 0}

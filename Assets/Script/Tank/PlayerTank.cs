@@ -6,12 +6,20 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
+
 public class PlayerTank : Tank
 {
     public PlayerController _PlayerCon;
     public GameCamera _GameCamera;
-
+    private bool _ASDon;
     private Gun _TankGun;
+    
+    [Range(0,10.0f)]
+    public float ScopeSpeed = 0;
+    public float StartScopeFov = 0;
+    public float EndScopeFov = 0;
+    private float CurrentScopeFov = 90;
+
 
     [Range(0.1f, 1.0f)]
     public float VisionUpdateTime = 0.5f;
@@ -39,6 +47,7 @@ public class PlayerTank : Tank
         _HandleMoveInput();
         _HandleAimInput();
         _TurnTurrets();
+        
 
         if (_CurrentVisionUpdateTime <= 0)
         {
@@ -48,6 +57,7 @@ public class PlayerTank : Tank
         else {
             _CurrentVisionUpdateTime -= Time.deltaTime;
         }
+
     }
 
     void LateUpdate()
@@ -99,7 +109,14 @@ public class PlayerTank : Tank
 
     private void _HandleAimInput()
     {
-        if (!_PlayerCon || !_GameCamera) return;
+        if (!_PlayerCon || !_GameCamera) return;  
+
+        if (_PlayerCon.AimDownScope > 0.0f){
+            _GameCamera.SetMode(GameCameraMode.ADS);
+        }
+        else{
+            _GameCamera.SetMode(GameCameraMode.Default);
+        }
 
         var Cameuler = _GameCamera.GetRotation().eulerAngles;
         var InputVector = _PlayerCon.AimVector;
@@ -126,9 +143,8 @@ public class PlayerTank : Tank
         HitRay.origin = transform.position;
         HitRay.direction = _TurretQuat * Vector3.forward;
 
-
         RaycastHit HitInfo;
-        bool visionhit = Physics.Raycast(HitRay,out HitInfo, 1000.0f, _GameCamera.AimPointCollision);
+        bool visionhit = Physics.Raycast(HitRay,out HitInfo, 1000.0f, _GameCamera.VisionLayerMask);
 
         if (visionhit){
             return HitInfo.point;
