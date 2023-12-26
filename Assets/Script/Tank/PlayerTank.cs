@@ -11,14 +11,7 @@ public class PlayerTank : Tank
 {
     public PlayerController _PlayerCon;
     public GameCamera _GameCamera;
-    private bool _ASDon;
     private Gun _TankGun;
-    
-    [Range(0,10.0f)]
-    public float ScopeSpeed = 0;
-    public float StartScopeFov = 0;
-    public float EndScopeFov = 0;
-    private float CurrentScopeFov = 90;
 
 
     [Range(0.1f, 1.0f)]
@@ -42,28 +35,23 @@ public class PlayerTank : Tank
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         _HandleMoveInput();
         _HandleAimInput();
         _TurnTurrets();
-        
 
         if (_CurrentVisionUpdateTime <= 0)
         {
             _CurrentVisionUpdateTime = VisionUpdateTime;
             VisionGrid.UpdatePoints(this.transform.position);
         }
-        else {
+        else
+        {
             _CurrentVisionUpdateTime -= Time.deltaTime;
         }
-
     }
 
-    void LateUpdate()
-    {
-        _GameCamera.UpdateTransform();
-    }
 
     void OnDrawGizmos()
     {
@@ -81,7 +69,7 @@ public class PlayerTank : Tank
             Gizmos.color = Color.red;
             Gizmos.DrawSphere(AimPoint, AimSphereGizmoSize);
 
-            Gizmos.color = new Color(0,1,0,0.5f);
+            Gizmos.color = new Color(0, 1, 0, 0.5f);
             Gizmos.DrawSphere(GetCurrentAimPoint(), AimSphereGizmoSize * 1.2f);
         }
     }
@@ -109,12 +97,14 @@ public class PlayerTank : Tank
 
     private void _HandleAimInput()
     {
-        if (!_PlayerCon || !_GameCamera) return;  
+        if (!_PlayerCon || !_GameCamera) return;
 
-        if (_PlayerCon.AimDownScope > 0.0f){
+        if (_PlayerCon.AimDownScope > 0.0f)
+        {
             _GameCamera.SetMode(GameCameraMode.ADS);
         }
-        else{
+        else
+        {
             _GameCamera.SetMode(GameCameraMode.Default);
         }
 
@@ -137,24 +127,29 @@ public class PlayerTank : Tank
         }
     }
 
-    public Vector3 GetCurrentAimPoint(){
+    public Vector3 GetCurrentAimPoint()
+    {
         var endPoint = (_TurretQuat * (Vector3.forward * 1000.0f)) + transform.position;
-        Ray HitRay = new Ray();
-        HitRay.origin = transform.position;
-        HitRay.direction = _TurretQuat * Vector3.forward;
+        Ray HitRay = new Ray(
+            transform.position,
+            _TurretQuat * Vector3.forward
+            );
 
         RaycastHit HitInfo;
-        bool visionhit = Physics.Raycast(HitRay,out HitInfo, 1000.0f, _GameCamera.VisionLayerMask);
+        bool visionhit = Physics.Raycast(HitRay, out HitInfo, 1000.0f, _GameCamera.VisionLayerMask);
 
-        if (visionhit){
+        if (visionhit)
+        {
             return HitInfo.point;
         }
-        else{
+        else
+        {
             return endPoint;
         }
     }
 
-    public Vector3 GetTargetAimPoint(){
+    public Vector3 GetTargetAimPoint()
+    {
         return _GameCamera.GetWorldAimPoint();
     }
 }

@@ -32,7 +32,7 @@ public class UI_PlayerReticle : MonoBehaviour
                     Screen.height,
                     0
                 );
-                var screenAimPoint =  TankComp._GameCamera._CamComp.WorldToScreenPoint(TankComp.GetCurrentAimPoint());
+                var screenAimPoint =  TankComp._GameCamera.Camera.WorldToScreenPoint(TankComp.GetCurrentAimPoint());
                 var widgetPos = screenAimPoint - (screenSize/2);
                 InnerCircle.anchoredPosition = widgetPos;
             }

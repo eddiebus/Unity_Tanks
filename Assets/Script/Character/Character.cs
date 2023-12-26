@@ -15,9 +15,9 @@ public class Character : MonoBehaviour
 {
     public float Health = 1.0f;
     public string CharacterTag = "EmptyCharacter";
-
-
     public static string GameObjectTagName = "Character";
+
+    public Action OnDestroy;
     // Start is called before the first frame update
     void Start()
     {
@@ -33,7 +33,6 @@ public class Character : MonoBehaviour
     public void Damage(float Ammount){
         Health -= Ammount;
     }
-
     public static List<Character> FindCharactersWithTag(string TargetTag){
         List<Character> returnList = new List<Character>();
 
@@ -59,4 +58,11 @@ public class Character : MonoBehaviour
         }
         else return null;
     }
+
+    public void Destroy(){
+        OnDestroy.Invoke();
+        GameObject.Destroy(gameObject);
+    }
+
+
 }

@@ -137,7 +137,6 @@ public class Tank : MonoBehaviour
         _TankInit();
     }
 
-
     void Update()
     {
         _TurnTurrets();
@@ -183,7 +182,6 @@ public class Tank : MonoBehaviour
 
         if (MoveVector != Vector3.zero)
         {
-
             
             Quaternion TargetBodyRot = Quaternion.RotateTowards(
                 _RigidBody.rotation,
