@@ -15,7 +15,7 @@ public class UI_PlayerReticle : MonoBehaviour
     }
 
     // Update is called once per frame
-    void LateUpdate()
+    void FixedUpdate()
     {
 
         if (!_Player)

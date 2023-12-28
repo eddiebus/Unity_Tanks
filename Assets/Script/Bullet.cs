@@ -9,7 +9,7 @@ public class Bullet : MonoBehaviour
 {
     
     private Quaternion Direction = Quaternion.identity;
-    
+    public LayerMask CollisionMask;
     public float LifeTime = 0.5f;
     public float Speed;
     public float DamageValue = 0.1f;
@@ -56,15 +56,22 @@ public class Bullet : MonoBehaviour
     void OnTriggerEnter(Collider other){
 
         var Character = other.gameObject.GetComponent<Character>();
+        
 
         if (Character){
             if (!FriendlyCharacters.Contains(Character.CharacterTag)){
                 Character.Damage(DamageValue);
                 Debug.Log($"Damaged {Character.gameObject.name} for {DamageValue}");
+                GameObject.Destroy(gameObject);
+            }
+        }
+        else{
+            if (other.gameObject.layer == CollisionMask){
+                GameObject.Destroy(gameObject);
             }
         }
 
 
-        GameObject.Destroy(gameObject);
+        
     }
 }

@@ -8,7 +8,6 @@ public struct PostShaderSetup
 {
     public int Pixels;
     public float OutlineSize;
-    public float CameraDepth;
 }
 
 public class PostProcessController : MonoBehaviour

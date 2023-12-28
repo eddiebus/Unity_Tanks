@@ -173,7 +173,7 @@ public class Tank : MonoBehaviour
         if (!_RigidBody) return;
         _SetRidigBody();
         var floorFinder = new FloorFinder(_RigidBody);
-        var MoveVector = (TargetPos - this.transform.position).normalized;
+        var MoveVector = Vector3.ClampMagnitude( TargetPos - this.transform.position,1.0f);
         MoveVector.y = 0;
 
         Vector3 TrueMove = Vector3.ProjectOnPlane(MoveVector, floorFinder.FloorNormal);

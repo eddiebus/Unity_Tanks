@@ -97,9 +97,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec621f7fe1a93c1489ceb35d78cc614a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CollisionMask:
+    serializedVersion: 2
+    m_Bits: 1
   LifeTime: 1
   Speed: 30
-  DamageValue: 0.1
+  DamageValue: 0.3
   FriendlyCharacters:
   - Player
 --- !u!136 &2673855601767289615

@@ -17,7 +17,7 @@ public class Character : MonoBehaviour
     public string CharacterTag = "EmptyCharacter";
     public static string GameObjectTagName = "Character";
 
-    public Action OnDestroy;
+    public UnityEngine.Events.UnityEvent OnDestroy;
     // Start is called before the first frame update
     void Start()
     {

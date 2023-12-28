@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -20,14 +21,12 @@ public sealed class ObjectSense : MonoBehaviour
 
     public List<Transform> EyePoints;
 
-    public Action OnStimuliUpdate;
+    public Action OnStimuliUpdate = new Action(() => {});
     // Start is called before the first frame update
     void Start()
     {
         CurrentStimuli = new List<ObjectStimuli>();
         _TimeTillUpdate = UpdateTime;
-
-        OnStimuliUpdate = new Action(() => { });
     }
 
     // Update is called once per frame
@@ -38,7 +37,6 @@ public sealed class ObjectSense : MonoBehaviour
         {
             _UpdateStimuli();
             _TimeTillUpdate = UpdateTime;
-            OnStimuliUpdate.Invoke();
         }
 
     }

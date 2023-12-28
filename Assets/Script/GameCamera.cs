@@ -1,5 +1,6 @@
 using System;
 using Cinemachine;
+using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -33,7 +34,7 @@ public class GameCamera : MonoBehaviour
 
     public GameCamFov FOVsetup;
     public float XRotationLimit = 60;
-    public float RotationSensitivity = 1.0f;
+    public float _CurrentFov;
 
     public LayerMask VisionLayerMask;
     public Material PostProcessEffect;
@@ -42,6 +43,8 @@ public class GameCamera : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        _CurrentFov = FOVsetup.DefaultFOV;
+
         PositionOffset = this.transform.localPosition;
         LookAngle = this.transform.rotation.eulerAngles;
 
@@ -58,6 +61,30 @@ public class GameCamera : MonoBehaviour
             PostProcessEffect.SetInt("_Pixels", ShaderSetup.Pixels);
             PostProcessEffect.SetFloat("_OutlineLength", ShaderSetup.OutlineSize);
             Graphics.Blit(src, dest, PostProcessEffect);
+        }
+    }
+
+
+    private void UpdateFov()
+    {
+        var fovLerp = 10.0f  * Time.deltaTime;
+        switch (_cameraMode)
+        {
+            case GameCameraMode.Default:
+                _CurrentFov = Mathf.Lerp(_CurrentFov, FOVsetup.DefaultFOV, fovLerp);
+                break;
+
+            case GameCameraMode.ADS:
+                _CurrentFov = Mathf.Lerp(_CurrentFov, FOVsetup.ADSfov, fovLerp);
+                break;
+
+            default:
+                break;
+        }
+
+        if (_VirtualCamComp)
+        {
+            _VirtualCamComp.m_Lens.FieldOfView = _CurrentFov;
         }
     }
 
@@ -80,18 +107,21 @@ public class GameCamera : MonoBehaviour
 
     public Vector3 GetWorldAimPoint()
     {
+        if (!_CamComp){
+            return transform.position;
+        }
         var forwardVector = transform.rotation * Vector3.forward;
         var AimPoint = this.transform.position + (forwardVector * 100.0f);
 
-        Ray CameraRay = new Ray(transform.position, transform.rotation * Vector3.forward);
+        var camTransform = _CamComp.transform;
+        Ray CameraRay = new Ray(camTransform.position, camTransform.rotation * Vector3.forward);
 
         RaycastHit hitInfo;
-        var AimPointHit = Physics.Raycast(CameraRay, out hitInfo, 1000, VisionLayerMask);
+        var AimPointHit = Physics.Raycast(CameraRay, out hitInfo, 1000, VisionLayerMask, QueryTriggerInteraction.Ignore);
         if (AimPointHit)
         {
             AimPoint = hitInfo.point;
         }
-
         return AimPoint;
     }
 
@@ -114,27 +144,34 @@ public class GameCamera : MonoBehaviour
             -rotateVector.y,
             rotateVector.x,
             0
-        ) * RotationSensitivity;
+        );
         ClampRotation();
     }
 
-    public void SetMode(GameCameraMode newMode){
+    public void SetMode(GameCameraMode newMode)
+    {
         _cameraMode = newMode;
     }
 
-    // Update is called once per frame
+    void Update()
+    {
+        UpdateFov();
+    }
+
     void FixedUpdate()
     {
         _CamComp = transform.root.gameObject.GetComponentInChildren<Camera>();
         // Update V Cam Component
-        if (_VirtualCamComp){
+        if (_VirtualCamComp)
+        {
             _VirtualCamComp.Follow = this.transform;
         }
         UpdateTransform();
         ClampRotation();
     }
 
-    void LateUpdate(){
+    void LateUpdate()
+    {
         UpdateTransform();
         ClampRotation();
     }

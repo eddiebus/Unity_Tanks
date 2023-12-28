@@ -119,7 +119,7 @@ public class PlayerController : MonoBehaviour
                     _MoveVector = leftStick;
                 }
                 if (rightStick.magnitude > GamepadAnalogueDeadZone){
-                    _AimVector = rightStick * GamepadSensitivity;
+                    _AimVector = rightStick * GamepadSensitivity * 2;
                 }
                 else{
                     _AimVector = Vector2.zero;

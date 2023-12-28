@@ -28,7 +28,7 @@ public class VisionGrid
     public List<VisionGridPoint> Points;
 
 
-    public VisionGrid(GameObject targetObj, float gridSize = 30.0f, int cellsPerRow = 20)
+    public VisionGrid(GameObject targetObj, float gridSize = 30.0f, int cellsPerRow = 15)
     {
         TargetObj = targetObj;
         Points = new List<VisionGridPoint>();
@@ -41,7 +41,11 @@ public class VisionGrid
 
     public void UpdatePoints(Vector3 OriginPoint)
     {
-
+        OriginPoint = new Vector3(
+            Mathf.Round(OriginPoint.x),
+            OriginPoint.y,
+            Mathf.Round(OriginPoint.z)
+        );
         Points.Clear();
         float posOffset = GridSize / (float)CellPerRow;
 

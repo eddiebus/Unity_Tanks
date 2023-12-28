@@ -21,19 +21,15 @@ public class AI_EnemyTank : AI
         _Tank = GetComponent<Tank>();
         _Sense = GetComponentInChildren<ObjectSense>();
 
-        _Sense.OnStimuliUpdate += () =>
-        {
-            Debug.Log($"Hello Stimuli Action");
-            _UpdateStimuli(_Sense);
-        };
 
 
         _EnemyComp = GetComponent<Enemy>();
     }
 
-    private void _UpdateStimuli(ObjectSense Source)
+    private void _UpdateStimuli()
     {
-        var Characters = Source.GetStimuliWithTag(StimuliTag.Character);
+        if (!_Sense) return;
+        var Characters = _Sense.GetStimuliWithTag(StimuliTag.Character);
 
         foreach (var charobj in Characters)
         {
@@ -64,7 +60,7 @@ public class AI_EnemyTank : AI
 
     protected override void HandleAICycle()
     {
-
+        _UpdateStimuli();
         if (Alert <= 0)
         {
             var walkarea = 20.0f;

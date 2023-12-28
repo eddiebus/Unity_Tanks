@@ -56,7 +56,7 @@ Shader "Custom/Sh_PostPixelation"
                 float dy  =GetPixelSize().y;
                 float dx = GetPixelSize().x;
 
-                if (_Pixels < 700){
+                if (_Pixels < 500){
                     return uv;
                 }
 
@@ -67,24 +67,35 @@ Shader "Custom/Sh_PostPixelation"
             }
 
             float GetDepthEdgeValue(float2 uv,float radius){
-                uv = GetPixelatedPoint(uv);
-                radius = abs(radius) * GetPixelSize();
-                float2 pixelSize = GetPixelSize();
 
-                float2 uv0 = uv + float2(-radius, -radius);
-                float2 uv1 = uv + float2(radius ,radius);
-                float2 uv2 = uv + float2(radius ,-radius);
-                float2 uv3 = uv + float2(-radius ,radius);
+                // pixelated center
+                uv = GetPixelatedPoint(uv);
+                // int outline only. 
+                radius = floor (radius);
+
+                // Base radius to pixels
+                float2 pixelSize = GetPixelSize();
+                float2 pixOffset = float2(pixelSize.x * radius, pixelSize.y * radius); 
+
+                // Get pixelated points to sample
+                float2 uv0 = uv + float2( -pixOffset.x,-pixOffset.y);
+                float2 uv1 = uv + float2( pixOffset.x,-pixOffset.y);
+                float2 uv2 = uv + float2(-pixOffset.x,pixOffset.y);
+                float2 uv3 = uv + float2(pixOffset.x,pixOffset.y);
 
                 float cen = tex2D(_CameraDepthTexture, uv);
 
+                // multipler to make difference around 1.0 value
+                float depthToOne = 1 / cen;
+
+                // Sample Points
                 float d0 = tex2D(_CameraDepthTexture, uv0);
                 float d1 = tex2D(_CameraDepthTexture, uv1);
                 float d2 = tex2D(_CameraDepthTexture, uv2);
                 float d3 = tex2D(_CameraDepthTexture, uv3);
 
-                float result = abs ( (d0 + d1 + d2 + d3) - cen * 4 ) * 100;
-                return  floor( result ) ;
+                float result =  ( (d0 + d1 + d2 + d3) - cen * 4 ) * (depthToOne * 10);
+                return  floor ( result )  ;
             }
 
             fixed4 frag (v2f i) : SV_Target
@@ -98,17 +109,18 @@ Shader "Custom/Sh_PostPixelation"
                 float2 sameplePoint = float2( sampleX , sampleY );
 
                 fixed4 col = tex2D(_MainTex,  GetPixelatedPoint( i.uv )  );
+                float depth = tex2D (_CameraDepthTexture, GetPixelatedPoint(i.uv) ).r; 
                 float edge = GetDepthEdgeValue( 
                     i.uv ,_OutlineLength );
 
-                if (edge > 0.1){
-                    float4 solidblack = float4(0,0,0,0.9);
-                    float4 newcol = lerp(col,solidblack,0.8);
+                if (edge > 0.0){
+                    float greyfloat = 0.1;
+                    float4 solidblack = float4(greyfloat,greyfloat,greyfloat,1.0);
+                    float4 newcol = lerp(col,solidblack,1.0);
                     col = newcol;
                     //col = float4(1,0,0,1);
                 }
 
-                //col = float4(edge,0,0,1);
                 return col;
             }
             ENDCG

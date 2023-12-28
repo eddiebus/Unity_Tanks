@@ -58,6 +58,11 @@ public class Enemy : Character
     // Update is called once per frame
     void Update()
     {
+        if (Health <= 0){
+            OnDestroy.Invoke();
+            GameObject.Destroy(gameObject);
+        }
+
         if (IsPlayerInView())
         {
             PlayerVisionTime += Time.deltaTime;

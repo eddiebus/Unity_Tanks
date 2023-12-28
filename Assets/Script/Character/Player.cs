@@ -9,6 +9,11 @@ public class Player : Character
             return GameObject.FindFirstObjectByType<Player>();
         }
     }
+    public static Player[] AllPlayers {
+        get {
+            return GameObject.FindObjectsByType<Player>(FindObjectsInactive.Include,FindObjectsSortMode.InstanceID);
+        }
+    }
     public List<Character> EnemyCharacters;
     // Start is called before the first frame update
     void Start()
