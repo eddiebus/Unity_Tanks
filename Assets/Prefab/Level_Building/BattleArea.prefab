@@ -66,7 +66,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4b0c5ed75e7f9c4895ea3a300c2c370, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayersIn: 0
+  StartSounds:
+  - {fileID: 8300000, guid: 62fc89b872d6b8c49ab2d5de0141eca4, type: 3}
+  - {fileID: 8300000, guid: cadc0e9af1920894685132bcc20c50ff, type: 3}
+  - {fileID: 8300000, guid: 74a340dc40b4fdf4db2565abd9e97afd, type: 3}
+  - {fileID: 8300000, guid: 9d2837278afffdb41af841b024779807, type: 3}
+  - {fileID: 8300000, guid: 5214f61c8c452df4786f4b8e9978a56a, type: 3}
+  ClearSounds:
+  - {fileID: 8300000, guid: 07916898aa6ea3846aa87e95d1690d83, type: 3}
+  - {fileID: 8300000, guid: 868f3caea69082f46a89712a720c6957, type: 3}
+  - {fileID: 8300000, guid: 8ed8a0b441a0a7442b3dfcf37c5162d0, type: 3}
+  - {fileID: 8300000, guid: ff1e9e132952cb14b92e9ce5a6613b53, type: 3}
+  - {fileID: 8300000, guid: 7ef070e634d58d749bffd1c80b574d4f, type: 3}
   OnBattleStart:
     m_PersistentCalls:
       m_Calls: []

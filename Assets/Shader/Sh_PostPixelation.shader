@@ -120,7 +120,7 @@ Shader "Custom/Sh_PostPixelation"
                     col = newcol;
                     //col = float4(1,0,0,1);
                 }
-
+                // col = float4(depth,0,0,1);
                 return col;
             }
             ENDCG

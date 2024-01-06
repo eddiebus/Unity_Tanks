@@ -13,8 +13,9 @@ GameObject:
   - component: {fileID: 6050899607118890521}
   - component: {fileID: 3670414811727483996}
   - component: {fileID: 2673855601767289615}
+  - component: {fileID: 4045687676982081433}
   m_Layer: 3
-  m_Name: GreyBullet
+  m_Name: DefaultPlayerBullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,7 +31,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 4.284121, y: 1.8542126, z: -3}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -42,7 +43,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5142755271626855034}
-  m_Mesh: {fileID: 7199063144179684139, guid: a39934ed5b5220a4c8b3e4e792e8c14a, type: 3}
+  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &6050899607118890521
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -105,6 +106,7 @@ MonoBehaviour:
   DamageValue: 0.3
   FriendlyCharacters:
   - Player
+  HitParticle: {fileID: 4733868921654648475, guid: 58d961e89197d9d4ba46dd3a3e35085a, type: 3}
 --- !u!136 &2673855601767289615
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -124,7 +126,20 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.12
+  m_Radius: 0.4
   m_Height: 0
   m_Direction: 2
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4045687676982081433
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5142755271626855034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e66a3f4d882e60b4aab196478af0877f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Colour: {r: 1, g: 0.87304294, b: 0, a: 0}

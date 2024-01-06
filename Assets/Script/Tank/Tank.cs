@@ -15,7 +15,6 @@ public class AI_TankMoveTo : AITask
     private float _TimeTaken;
 
     private int PathIndex = 0;
-
     public AI_TankMoveTo(Tank Caller, Vector3 TargetPosition)
     {
         _Caller = Caller;
@@ -53,12 +52,12 @@ public class AI_TankMoveTo : AITask
 
     public override void Update()
     {
-        float TargetTime = _PathDistance / (_Caller.MoveSpeed);
+        float TargetTime = _PathDistance / _Caller.MoveSpeed;
         _TimeTaken += Time.deltaTime;
 
         // Tank taken too long to reach destination
         // End Task
-        if (_TimeTaken > TargetTime * 1.5f)
+        if (_TimeTaken > TargetTime * 1.1f)
         {
             _State = AITaskState.Failed;
             return;
@@ -84,9 +83,6 @@ public class AI_TankMoveTo : AITask
         {
             _State = AITaskState.Completed;
         }
-
-
-
     }
 
     public override void DrawDebugGizmo()
@@ -126,7 +122,7 @@ public class Tank : MonoBehaviour
 
     private Vector3 AimPoint;
     protected Quaternion _TurretQuat = Quaternion.identity;
-    private Quaternion _TargetTurretQuat;
+    protected Quaternion _TargetTurretQuat;
 
     // Obj turrets are rigged to aim at
     public GameObject TurretAimControl;
@@ -137,12 +133,10 @@ public class Tank : MonoBehaviour
         _TankInit();
     }
 
-    void Update()
-    {
+    void Update(){
         _TurnTurrets();
-
+        
     }
-
     protected void _TankInit()
     {
         _RigidBody = GetComponent<Rigidbody>();
@@ -189,14 +183,21 @@ public class Tank : MonoBehaviour
                 TurnSpeed * (Time.deltaTime * 100)
             );
 
-            _RigidBody.MoveRotation(TargetBodyRot);
+            transform.rotation = TargetBodyRot ;
 
+            TurretAimControl.transform.position = AimPoint;
         }
     }
 
     public void AimAt(Vector3 Target)
     {
         AimPoint = Target;
+        _TargetTurretQuat = Quaternion.LookRotation(AimPoint - transform.position);
+    }
+
+    protected void _UpdateRig(){
+        var ControlPos = (_TurretQuat * Vector3.forward * (AimPoint - transform.position).magnitude) + this.transform.position;
+        TurretAimControl.transform.position = ControlPos;
     }
 
     public void TurnBodyTo(Vector3 TargetPos){
@@ -219,8 +220,19 @@ public class Tank : MonoBehaviour
         Quaternion TargetQuat = Quaternion.LookRotation(AimPoint - transform.position);
         _TurretQuat = Quaternion.RotateTowards(_TurretQuat, TargetQuat, TurretTurnSpeed * (Time.deltaTime * 100.0f));
 
+
         var ControlPos = (_TurretQuat * Vector3.forward * (AimPoint - transform.position).magnitude) + this.transform.position;
         TurretAimControl.transform.position = ControlPos;
+    }
+
+    public Quaternion GetTurretAimDelta(){
+        var TargetQuat = Quaternion.LookRotation(
+            AimPoint - transform.position
+        );
+
+        Quaternion c = TargetQuat * Quaternion.Inverse(_TurretQuat);
+
+        return c;
     }
 
 

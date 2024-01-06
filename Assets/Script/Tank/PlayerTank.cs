@@ -9,6 +9,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerTank : Tank
 {
+    public Quaternion TurretDiff;
     public PlayerController _PlayerCon;
     public GameCamera _GameCamera;
     private Gun _TankGun;
@@ -34,13 +35,12 @@ public class PlayerTank : Tank
 
     }
 
-    // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
         _HandleMoveInput();
         _HandleAimInput();
         _TurnTurrets();
-
+        _UpdateRig();
         if (_CurrentVisionUpdateTime <= 0)
         {
             _CurrentVisionUpdateTime = VisionUpdateTime;
@@ -50,6 +50,13 @@ public class PlayerTank : Tank
         {
             _CurrentVisionUpdateTime -= Time.deltaTime;
         }
+
+        TurretDiff = _TargetTurretQuat * Quaternion.Inverse(_TurretQuat);
+
+    }
+
+    void LateUpdate(){
+        _UpdateRig();
     }
 
 
@@ -62,8 +69,7 @@ public class PlayerTank : Tank
 
         if (_GameCamera)
         {
-            Vector3 AimPoint = _GameCamera.GetWorldAimPoint();
-
+            Vector3 AimPoint = TurretAimControl.transform.position;
 
             float AimSphereGizmoSize = 0.3f;
             Gizmos.color = Color.red;
@@ -129,14 +135,16 @@ public class PlayerTank : Tank
 
     public Vector3 GetCurrentAimPoint()
     {
-        var endPoint = (_TurretQuat * (Vector3.forward * 1000.0f)) + transform.position;
+        var TargetDistance = (transform.position - GetTargetAimPoint()).magnitude;
+        var endPoint = (_TurretQuat * (Vector3.forward * TargetDistance)) + transform.position;
         Ray HitRay = new Ray(
             transform.position,
             _TurretQuat * Vector3.forward
             );
 
         RaycastHit HitInfo;
-        bool visionhit = Physics.Raycast(HitRay, out HitInfo, 1000.0f, _GameCamera.VisionLayerMask);
+        bool visionhit = Physics.Raycast(HitRay, out HitInfo, TargetDistance, _GameCamera.VisionLayerMask,
+        QueryTriggerInteraction.Ignore);
 
         if (visionhit)
         {
@@ -146,6 +154,7 @@ public class PlayerTank : Tank
         {
             return endPoint;
         }
+
     }
 
     public Vector3 GetTargetAimPoint()

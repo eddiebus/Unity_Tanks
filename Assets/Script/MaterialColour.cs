@@ -13,8 +13,9 @@ public class MaterialColour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        rootObj = transform.root.gameObject;
+        rootObj = transform.gameObject;
         meshR = rootObj.GetComponentsInChildren<Renderer>();
+        _UpdateMaterials();
     }
 
     // Update is called once per frame

@@ -8,16 +8,10 @@ public class UI_PlayerReticle : MonoBehaviour
     public Player _Player;
     public RectTransform OuterCircle;
     public RectTransform InnerCircle;
-    // Start is called before the first frame update
-    void Start()
+
+    public Vector3 delta;
+    void LateUpdate()
     {
-
-    }
-
-    // Update is called once per frame
-    void FixedUpdate()
-    {
-
         if (!_Player)
         {
             _Player = Player.InstanceObj;
@@ -27,14 +21,20 @@ public class UI_PlayerReticle : MonoBehaviour
             var TankComp = _Player.gameObject.GetComponent<PlayerTank>();
             if (TankComp && InnerCircle)
             {
+                //AimDelta /= 360.0f;
+
                 var screenSize = new Vector3(
                     Screen.width,
                     Screen.height,
                     0
                 );
-                var screenAimPoint =  TankComp._GameCamera.Camera.WorldToScreenPoint(TankComp.GetCurrentAimPoint());
-                var widgetPos = screenAimPoint - (screenSize/2);
-                InnerCircle.anchoredPosition = widgetPos;
+                Vector3 screenAimPoint = TankComp._GameCamera.Camera.WorldToScreenPoint(TankComp.GetCurrentAimPoint());
+                Vector3 widgetPos = screenAimPoint - (screenSize / 2);
+
+
+                InnerCircle.anchoredPosition = Vector3.zero + 
+                (TankComp.GetTurretAimDelta() *  Vector3.back) * 100;
+
             }
         }
 

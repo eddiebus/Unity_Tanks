@@ -31,7 +31,7 @@ public class CharacterSpawner : MonoBehaviour
     }
 
     private void SpawnChar(){
-        int selectIndex = (int) Mathf.Round ( Random.Range(0.0f,(float)_SpawnedCharacter.Count) );
+        int selectIndex = (int) Mathf.Round ( Random.Range(0.0f,CharacterPrefab.Count - 1) );
         var newObj = GameObject.Instantiate(CharacterPrefab[selectIndex],this.transform.position,Quaternion.identity);
         _TimeTillSpawn = SpawnDelay;
 

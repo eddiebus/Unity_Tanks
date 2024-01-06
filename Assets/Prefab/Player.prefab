@@ -29,8 +29,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1923974351192267727}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.5, y: 0.3, z: -1.5}
+  m_LocalRotation: {x: -0, y: -0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.49999976, y: 0.3, z: -1.4999998}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -202,6 +202,7 @@ GameObject:
   - component: {fileID: 6835082164166461805}
   - component: {fileID: 6325123730052735561}
   - component: {fileID: 4602295344658850380}
+  - component: {fileID: 2311955185242221665}
   m_Layer: 6
   m_Name: Player
   m_TagString: Character
@@ -291,6 +292,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Health: 1
   CharacterTag: Player
+  DamageSFX: []
   OnDestroy:
     m_PersistentCalls:
       m_Calls: []
@@ -327,6 +329,7 @@ MonoBehaviour:
   TurnSpeed: 2
   TurretTurnSpeed: 1
   TurretAimControl: {fileID: 8176220431269259703}
+  TurretDiff: {x: 0, y: 0, z: 0, w: 0}
   _PlayerCon: {fileID: 0}
   _GameCamera: {fileID: 0}
   VisionUpdateTime: 0.534
@@ -382,6 +385,20 @@ MonoBehaviour:
   HearingRadius: 0
   CurrentStimuli: []
   EyePoints: []
+  Eyes: []
+--- !u!114 &2311955185242221665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3426833590062254002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e66a3f4d882e60b4aab196478af0877f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Colour: {r: 0, g: 0.041095987, b: 0.9245283, a: 0}
 --- !u!1 &5432096808985778116
 GameObject:
   m_ObjectHideFlags: 0
@@ -426,7 +443,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bbdceab6018fa649b9d4f861e683ccb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FireDelay: 0.3
+  FireDelay: 0.2
   BulletPrefab: {fileID: 5142755271626855034, guid: cb493bbbfb0f1d94180a409e1ae3a32f, type: 3}
   FireSfx:
   - {fileID: 8300000, guid: f8cd3471b28d27846a4cc6a6da457ca6, type: 3}
@@ -486,7 +503,7 @@ MonoBehaviour:
   _CurrentFov: 0
   VisionLayerMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 65
   PostProcessEffect: {fileID: 0}
   ShaderSetup:
     Pixels: 0
@@ -639,6 +656,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -8392678315808143354, guid: 24e97c44d8073144e89de16ae2ef545f, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 10302, guid: 0000000000000000f000000000000000, type: 0}
+    - target: {fileID: -7886691687914849799, guid: 24e97c44d8073144e89de16ae2ef545f, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 10302, guid: 0000000000000000f000000000000000, type: 0}
     - target: {fileID: -7753110038470899777, guid: 24e97c44d8073144e89de16ae2ef545f, type: 3}
       propertyPath: m_Layer
       value: 6
@@ -647,9 +672,13 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: -6652725513331149018, guid: 24e97c44d8073144e89de16ae2ef545f, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 10302, guid: 0000000000000000f000000000000000, type: 0}
     - target: {fileID: -6437832087217251294, guid: 24e97c44d8073144e89de16ae2ef545f, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.000008239155
+      value: -0.000008426408
       objectReference: {fileID: 0}
     - target: {fileID: -6437832087217251294, guid: 24e97c44d8073144e89de16ae2ef545f, type: 3}
       propertyPath: m_LocalRotation.z
@@ -667,6 +696,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: -3610201671771969662, guid: 24e97c44d8073144e89de16ae2ef545f, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 10302, guid: 0000000000000000f000000000000000, type: 0}
     - target: {fileID: -1610765606278315743, guid: 24e97c44d8073144e89de16ae2ef545f, type: 3}
       propertyPath: m_Layer
       value: 6
@@ -679,6 +712,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.y
       value: 19.96
       objectReference: {fileID: 0}
+    - target: {fileID: -134368388243316188, guid: 24e97c44d8073144e89de16ae2ef545f, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 10302, guid: 0000000000000000f000000000000000, type: 0}
     - target: {fileID: 635547659545568360, guid: 24e97c44d8073144e89de16ae2ef545f, type: 3}
       propertyPath: m_Layer
       value: 6
@@ -691,10 +728,22 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 1128806274004605822, guid: 24e97c44d8073144e89de16ae2ef545f, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 10302, guid: 0000000000000000f000000000000000, type: 0}
     - target: {fileID: 2942957606830857925, guid: 24e97c44d8073144e89de16ae2ef545f, type: 3}
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 5006816570132771912, guid: 24e97c44d8073144e89de16ae2ef545f, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 10302, guid: 0000000000000000f000000000000000, type: 0}
+    - target: {fileID: 7202271454713460447, guid: 24e97c44d8073144e89de16ae2ef545f, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 10302, guid: 0000000000000000f000000000000000, type: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -727,8 +776,8 @@ AimConstraint:
   m_Enabled: 1
   serializedVersion: 2
   m_Weight: 1
-  m_RotationAtRest: {x: -0.0009441371, y: -0, z: 0}
-  m_RotationOffset: {x: -8.131053, y: 0, z: 0}
+  m_RotationAtRest: {x: -0.0009655948, y: -0, z: 0}
+  m_RotationOffset: {x: -8.131069, y: 0, z: 0}
   m_AimVector: {x: 0, y: 0, z: 1}
   m_UpVector: {x: 0, y: 1, z: 0}
   m_WorldUpVector: {x: 0, y: 1, z: 0}

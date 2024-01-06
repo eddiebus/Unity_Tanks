@@ -5,6 +5,13 @@ using UnityEditor;
 using UnityEngine;
 
 
+[Serializable]
+public class ObjectSenseEye
+{
+    public Transform Point;
+    public Vector3 RotationOffset;
+}
+
 public sealed class ObjectSense : MonoBehaviour
 {
     [Range(0.1f, 3.0f)]
@@ -21,7 +28,9 @@ public sealed class ObjectSense : MonoBehaviour
 
     public List<Transform> EyePoints;
 
-    public Action OnStimuliUpdate = new Action(() => {});
+    public List<ObjectSenseEye> Eyes;
+
+    public Action OnStimuliUpdate = new Action(() => { });
     // Start is called before the first frame update
     void Start()
     {
@@ -98,28 +107,27 @@ public sealed class ObjectSense : MonoBehaviour
                         {
                             List<Transform> eyePoints = new List<Transform>(EyePoints);
 
-                            // No Manual eye points. Default to root transform
-                            if (eyePoints.Count == 0)
-                            {
-                                eyePoints.Add(this.transform);
-                            }
 
                             bool ToAdd = false;
 
                             //Loop eyePoints
-                            foreach (var point in eyePoints)
+                            // Check if Stimuli is visible under eye
+                            foreach (var eye in Eyes)
                             {
-                                var StimuliRelPos = Stimuli.transform.position - point.position;
+                                var TrueEyeRotation = eye.Point.rotation * Quaternion.Euler(eye.RotationOffset);
+
+                                var StimuliRelPos = Stimuli.transform.position - eye.Point.position;
                                 var StimuliDistance = StimuliRelPos.magnitude;
                                 var QuatToStimuli = Quaternion.LookRotation(StimuliRelPos);
-                                var AngleToStimuli = Quaternion.Angle(point.rotation, QuatToStimuli);
+                                var AngleToStimuli = Quaternion.Angle(TrueEyeRotation, QuatToStimuli);
 
                                 Ray VisionRay = new Ray();
-                                VisionRay.origin = point.position;
+                                VisionRay.origin = eye.Point.position;
                                 VisionRay.direction = StimuliRelPos.normalized;
 
                                 bool Visible = !Physics.Raycast(VisionRay, StimuliDistance, 0 << 0);
 
+                                //Is Look Rotation -> EyeAngle in range
                                 if (
                                     StimuliDistance < SightDistance &&
                                     AngleToStimuli < SightRadius / 2.0f &&
@@ -150,29 +158,34 @@ public sealed class ObjectSense : MonoBehaviour
         else
         if (SelectObj != this.gameObject && !SelectObj.transform.IsChildOf(this.gameObject.transform)) return;
 
-        List<Transform> eyePoints = new List<Transform>(EyePoints);
+        List<ObjectSenseEye> eyePoints = new List<ObjectSenseEye>(Eyes);
         if (EyePoints.Count == 0)
         {
-            eyePoints.Add(transform);
+            var defaultEye = new ObjectSenseEye();
+            defaultEye.Point = transform;
+            defaultEye.RotationOffset = Vector3.zero;
+            eyePoints.Add(defaultEye);
         }
 
-        foreach (var eye in eyePoints)
+        foreach (var eye in Eyes)
         {
+            var eyeRotation = eye.Point.rotation * Quaternion.Euler(eye.RotationOffset);
+
             Vector3 VisionForward = Vector3.forward * SightDistance;
             var VisionWidth = (Quaternion.AngleAxis(SightRadius / 2.0f, Vector3.up) * VisionForward).x;
-            Vector3 LVisionPoint = eye.rotation * new Vector3(-VisionWidth, 0, SightDistance);
-            Vector3 RVisionPoint = eye.rotation * new Vector3(VisionWidth, 0, SightDistance);
+            Vector3 LVisionPoint = eyeRotation * new Vector3(-VisionWidth, 0, SightDistance);
+            Vector3 RVisionPoint = eyeRotation * new Vector3(VisionWidth, 0, SightDistance);
 
-            LVisionPoint += eye.position;
-            RVisionPoint += eye.position;
+            LVisionPoint += eye.Point.position;
+            RVisionPoint += eye.Point.position;
 
             Vector3[] DrawPoints =  {
-            eye.position,
+            eye.Point.position,
             LVisionPoint,
             LVisionPoint,
             RVisionPoint,
             RVisionPoint,
-            eye.position
+            eye.Point.position
             };
             Gizmos.color = Color.yellow;
             Gizmos.DrawLineList(DrawPoints);

@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Barrier : MonoBehaviour
+public class Barrier : Trigger
 {
 
     public bool BarrierOn;
-
 
     private Collider[] _Colliders;
     private NavMeshObstacle navMeshObstacle;
@@ -29,8 +28,7 @@ public class Barrier : MonoBehaviour
         navMeshObstacle.carving = BarrierOn;
     }
 
-
-    public void Toggle(bool On){
+    public override void Toggle(bool On){
         BarrierOn = On;
     }
 }

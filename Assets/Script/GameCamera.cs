@@ -117,7 +117,7 @@ public class GameCamera : MonoBehaviour
         Ray CameraRay = new Ray(camTransform.position, camTransform.rotation * Vector3.forward);
 
         RaycastHit hitInfo;
-        var AimPointHit = Physics.Raycast(CameraRay, out hitInfo, 1000, VisionLayerMask, QueryTriggerInteraction.Ignore);
+        var AimPointHit = Physics.Raycast(CameraRay, out hitInfo, 100, VisionLayerMask, QueryTriggerInteraction.Ignore);
         if (AimPointHit)
         {
             AimPoint = hitInfo.point;
@@ -156,6 +156,7 @@ public class GameCamera : MonoBehaviour
     void Update()
     {
         UpdateFov();
+        BillboardObject.UpdateDirection(_CamComp);
     }
 
     void FixedUpdate()

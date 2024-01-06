@@ -20,9 +20,6 @@ public class AI_EnemyTank : AI
         AIInit();
         _Tank = GetComponent<Tank>();
         _Sense = GetComponentInChildren<ObjectSense>();
-
-
-
         _EnemyComp = GetComponent<Enemy>();
     }
 
@@ -56,6 +53,7 @@ public class AI_EnemyTank : AI
         {
             Alert -= Time.deltaTime / 10;
         }
+        
     }
 
     protected override void HandleAICycle()
@@ -94,10 +92,8 @@ public class AI_EnemyTank : AI
                     ExecuteAITask(MoveTask);
                 }
             }
-            else
-            {
-                _Tank.AimAt(PlayerPos);
-            }
+
+            _Tank.AimAt(PlayerPos);
         }
 
 
