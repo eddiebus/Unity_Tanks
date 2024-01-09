@@ -31,6 +31,7 @@ public class CharacterSpawner : MonoBehaviour
     }
 
     private void SpawnChar(){
+        if (CharacterPrefab.Count == 0) return;
         int selectIndex = (int) Mathf.Round ( Random.Range(0.0f,CharacterPrefab.Count - 1) );
         var newObj = GameObject.Instantiate(CharacterPrefab[selectIndex],this.transform.position,Quaternion.identity);
         _TimeTillSpawn = SpawnDelay;
@@ -49,22 +50,7 @@ public class CharacterSpawner : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        foreach (var obj in CharacterPrefab){
-            if (PrefabUtility.GetPrefabInstanceHandle(obj) == null){
-                Debug.LogWarning($"Character Spawner ({name}) | Object in spawn list was not prefab. Obj Removed");
-                CharacterPrefab.Remove(obj);
-            }
-            else{
-                var charComp = obj.GetComponent<Character>();
-                if (!charComp){
-                    Debug.LogWarning($"Character Spawner ({name}) | Object in spawn list was not prefab. Obj Removed");
-                    CharacterPrefab.Remove(obj);
-                }
-                else{
-                    Debug.Log("Prefab OK");
-                }
-            }
-        }
+
     }
 
     void Update()

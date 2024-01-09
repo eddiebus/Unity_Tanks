@@ -310,7 +310,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerIndex: 0
-  GamepadSensitivity: 0.8
+  GamepadSensitivity: 1.2
   MouseSensitivity: 2
   GamepadAnalogueDeadZone: 0.098
 --- !u!114 &5330163009829979595

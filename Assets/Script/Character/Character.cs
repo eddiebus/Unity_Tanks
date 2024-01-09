@@ -27,12 +27,6 @@ public class Character : MonoBehaviour
         tag = GameObjectTagName;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     public void Damage(float Ammount)
     {
         Health -= Ammount;
@@ -49,7 +43,7 @@ public class Character : MonoBehaviour
             ); 
         }
     }
-    public static List<Character> FindCharactersWithTag(string TargetTag)
+    public static Character[] FindCharactersWithTag(string TargetTag)
     {
         List<Character> returnList = new List<Character>();
 
@@ -64,7 +58,7 @@ public class Character : MonoBehaviour
 
         if (returnList.Count > 0)
         {
-            return returnList;
+            return returnList.ToArray();
         }
         else
         {
@@ -75,7 +69,7 @@ public class Character : MonoBehaviour
     public static Character FindCharacterWithTag(string TargetTag)
     {
         var search = FindCharactersWithTag(TargetTag);
-        if (search.Count > 0)
+        if (search.Length > 0)
         {
             return search[0];
         }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -5,7 +6,8 @@ using UnityEngine;
 
 public class AI : MonoBehaviour
 {
-    private float ThinkTime = 0.5f;
+    [Range(0.1f,1.0f)]
+    public float ThinkTime = 0.5f;
     private float _TimeTillThink;
     private AITask _CurrentTask = null;
 
@@ -16,6 +18,7 @@ public class AI : MonoBehaviour
 
     protected void AITick()
     {
+        
         if (_TimeTillThink > 0)
         {
             _TimeTillThink -= Time.deltaTime;
@@ -33,9 +36,17 @@ public class AI : MonoBehaviour
 
     }
 
+    protected virtual void SetAIState(int NewState){
+        throw new NotImplementedException("Set Function For State Not Implimented on AI Class");
+    }
+
+    public string GetCurrentStateName(){
+        throw new NotImplementedException();
+    }
+
     protected virtual void HandleAICycle()
     {
-
+        throw new NotImplementedException("AI Cycle State Not Implimented on AI Class");
     } 
 
     protected void ExecuteAITask(AITask NewTask)

@@ -114,7 +114,6 @@ public class AI_TankMoveTo : AITask
 
 public class Tank : MonoBehaviour
 {
-
     public float MoveSpeed = 5.0f;
     public float TurnSpeed = 10.0f;
     public float TurretTurnSpeed = 1.0f;
@@ -233,6 +232,15 @@ public class Tank : MonoBehaviour
         Quaternion c = TargetQuat * Quaternion.Inverse(_TurretQuat);
 
         return c;
+    }
+
+
+    public RigidBodyBounds GetRigidbodyBounds(){
+        return new RigidBodyBounds(_RigidBody);
+    }
+
+    void OnDrawGizmos(){
+        GetRigidbodyBounds().DrawDebugGizmos();
     }
 
 

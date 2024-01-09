@@ -50,7 +50,6 @@ public class PlayerTank : Tank
         {
             _CurrentVisionUpdateTime -= Time.deltaTime;
         }
-
         TurretDiff = _TargetTurretQuat * Quaternion.Inverse(_TurretQuat);
 
     }
@@ -58,7 +57,6 @@ public class PlayerTank : Tank
     void LateUpdate(){
         _UpdateRig();
     }
-
 
     void OnDrawGizmos()
     {
@@ -78,6 +76,9 @@ public class PlayerTank : Tank
             Gizmos.color = new Color(0, 1, 0, 0.5f);
             Gizmos.DrawSphere(GetCurrentAimPoint(), AimSphereGizmoSize * 1.2f);
         }
+
+        var rigBounds = new RigidBodyBounds(_RigidBody);
+        rigBounds.DrawDebugGizmos();
     }
 
     private void _HandleMoveInput()
@@ -161,4 +162,5 @@ public class PlayerTank : Tank
     {
         return _GameCamera.GetWorldAimPoint();
     }
+
 }
