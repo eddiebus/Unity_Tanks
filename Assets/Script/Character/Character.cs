@@ -56,14 +56,7 @@ public class Character : MonoBehaviour
             }
         }
 
-        if (returnList.Count > 0)
-        {
-            return returnList.ToArray();
-        }
-        else
-        {
-            return null;
-        }
+        return returnList.ToArray();
     }
 
     public static Character FindCharacterWithTag(string TargetTag)
@@ -79,7 +72,7 @@ public class Character : MonoBehaviour
     public void Destroy()
     {
         OnDestroy.Invoke();
-        GameObject.Destroy(gameObject);
+        GameObject.Destroy(transform.root.gameObject);
     }
 
 

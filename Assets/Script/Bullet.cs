@@ -60,6 +60,7 @@ public class Bullet : MonoBehaviour
     }
 
 
+
     protected void SpawnHitParticle()
     {
         if (!HitParticle) return;
@@ -77,31 +78,34 @@ public class Bullet : MonoBehaviour
         }
     }
 
-
-
     void OnTriggerEnter(Collider other)
     {
+        var OwnerBody = other.attachedRigidbody;
 
-        var Character = other.gameObject.GetComponent<Character>();
-        if (other.isTrigger) return;
-
-        if (Character)
+        // Colliding Rigidbody. Check for character
+        if (OwnerBody)
         {
-            if (!FriendlyCharacters.Contains(Character.CharacterTag))
+            var Character = OwnerBody.gameObject.GetComponentInChildren<Character>();
+            if (other.isTrigger) return;
+
+            if (Character)
             {
-                Character.Damage(DamageValue);
-                Debug.Log($"Damaged {Character.gameObject.name} for {DamageValue}");
-                GameObject.Destroy(gameObject);
-                SpawnHitParticle();
+                if (!FriendlyCharacters.Contains(Character.CharacterTag))
+                {
+                    Character.Damage(DamageValue);
+                    Debug.Log($"Damaged {Character.gameObject.name} for {DamageValue}");
+                    GameObject.Destroy(gameObject);
+                    SpawnHitParticle();
+                }
             }
         }
+        // Not Rigidbody check for general collision.
         else
         {
-            if (((1 << other.gameObject.layer) & CollisionMask) != 0)
+            if ( ( ((1 << other.gameObject.layer) & CollisionMask) != 0 ) && !other.isTrigger )
             {
                 GameObject.Destroy(gameObject);
             }
         }
-
     }
 }

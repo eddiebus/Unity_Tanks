@@ -18,8 +18,7 @@ public class Enemy : Character
     void Update()
     {
         if (Health <= 0){
-            OnDestroy.Invoke();
-            GameObject.Destroy(gameObject);
+            this.Destroy();
         }
         _AttackStamina -= Time.deltaTime;
     }

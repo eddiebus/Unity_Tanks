@@ -25,6 +25,7 @@ public struct GameCamFov
 
 public class GameCamera : MonoBehaviour
 {
+    public Transform Parent;
     public CinemachineVirtualCamera _VirtualCamComp;
     private GameCameraMode _cameraMode = GameCameraMode.Default;
     private Camera _CamComp;
@@ -45,6 +46,9 @@ public class GameCamera : MonoBehaviour
     {
         _CurrentFov = FOVsetup.DefaultFOV;
 
+        if (Parent){
+            PositionOffset = this.transform.position - Parent.position;
+        }
         PositionOffset = this.transform.localPosition;
         LookAngle = this.transform.rotation.eulerAngles;
 
@@ -134,7 +138,7 @@ public class GameCamera : MonoBehaviour
     public void UpdateTransform()
     {
         transform.rotation = Quaternion.Euler(LookAngle);
-        var worldPos = transform.parent.position + (Quaternion.Euler(LookAngle) * PositionOffset);
+        var worldPos = Parent.position + (Quaternion.Euler(LookAngle) * PositionOffset);
         this.transform.position = worldPos;
     }
 

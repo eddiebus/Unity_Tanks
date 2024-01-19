@@ -4,7 +4,6 @@ using UnityEngine.UIElements;
 
 public class ParticleSpawner : Trigger
 {
-    public bool Active;
     public GameObject Particle;
     [Range(0.05f, 1.0f)]
     public float SpawnDelay;

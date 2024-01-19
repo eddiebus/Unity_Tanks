@@ -12,31 +12,13 @@ public class UI_PlayerReticle : MonoBehaviour
     public Vector3 delta;
     void LateUpdate()
     {
-        if (!_Player)
-        {
-            _Player = Player.InstanceObj;
-        }
-        else
-        {
-            var TankComp = _Player.gameObject.GetComponent<PlayerTank>();
-            if (TankComp && InnerCircle)
-            {
-                //AimDelta /= 360.0f;
 
-                var screenSize = new Vector3(
-                    Screen.width,
-                    Screen.height,
-                    0
-                );
-                Vector3 screenAimPoint = TankComp._GameCamera.Camera.WorldToScreenPoint(TankComp.GetCurrentAimPoint());
-                Vector3 widgetPos = screenAimPoint - (screenSize / 2);
-
-
-                InnerCircle.anchoredPosition = Vector3.zero + 
-                (TankComp.GetTurretAimDelta() *  Vector3.back) * 100;
-
-            }
-        }
-
+        Vector2 aimPos = PlayerCon.GetController(0).AimPoint;
+        Vector2 retPos = PlayerCon.GetController(0).AimPoint;
+        retPos *= 0.5f;
+        retPos.x *= Screen.width;
+        retPos.y *= Screen.height;
+        
+        InnerCircle.anchoredPosition = retPos;
     }
 }

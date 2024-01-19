@@ -25,7 +25,6 @@ public class PlayerTank : Tank
         var test = GameManager.Instance;
         base._TankInit();
         _PlayerCon = this.GetComponent<PlayerController>();
-        _GameCamera = GetComponentInChildren<GameCamera>();
         _TankGun = GetComponentInChildren<Gun>();
 
         this.gameObject.tag = Character.GameObjectTagName;
@@ -54,8 +53,15 @@ public class PlayerTank : Tank
 
     }
 
-    void LateUpdate(){
+    void FixedUpdate()
+    {
+        // _UpdateRig();
+    }
+
+    void LateUpdate()
+    {
         _UpdateRig();
+        AimAt(_GameCamera.GetWorldAimPoint());
     }
 
     void OnDrawGizmos()
@@ -83,18 +89,14 @@ public class PlayerTank : Tank
 
     private void _HandleMoveInput()
     {
-        if (!_PlayerCon || !_GameCamera) return;
-        var InputVector = _PlayerCon.MoveVector;
-
+        if (!_GameCamera) return;
+        var InputVector = PlayerCon.GetController(0).MoveVector;
         Vector3 CamEuler = _GameCamera.transform.rotation.eulerAngles;
-
         var MoveVector = new Vector3(
             InputVector.x,
             0,
             InputVector.y
         );
-
-
         MoveVector = Quaternion.Euler(
             new Vector3(0, CamEuler.y, 0)
         ) * MoveVector;
@@ -104,31 +106,29 @@ public class PlayerTank : Tank
 
     private void _HandleAimInput()
     {
-        if (!_PlayerCon || !_GameCamera) return;
+        if (!_GameCamera) return;
 
-        if (_PlayerCon.AimDownScope > 0.0f)
+        PlayerCon Controller = PlayerCon.GetController(0);
+
+        if (_GameCamera)
         {
-            _GameCamera.SetMode(GameCameraMode.ADS);
+            if (Controller.AimDownScope > 0.0f)
+            {
+                _GameCamera.SetMode(GameCameraMode.ADS);
+            }
+            else
+            {
+                _GameCamera.SetMode(GameCameraMode.Default);
+            }
+
+            var InputVector = Controller.AimVector;
+
+            _GameCamera.Rotate(Controller.AimVector);
+
+            AimAt(_GameCamera.GetWorldAimPoint());
         }
-        else
-        {
-            _GameCamera.SetMode(GameCameraMode.Default);
-        }
 
-        var Cameuler = _GameCamera.GetRotation().eulerAngles;
-        var InputVector = _PlayerCon.AimVector;
-        Vector3 AimVector = new Vector3(
-            InputVector.x,
-            0,
-            InputVector.y
-        );
-
-        _GameCamera.Rotate(_PlayerCon.AimVector);
-
-        AimVector = Quaternion.AngleAxis(Cameuler.y, Vector3.up) * AimVector;
-        AimAt(_GameCamera.GetWorldAimPoint());
-
-        if (_PlayerCon.Fire > 0.1f)
+        if (Controller.Fire > 0.1f)
         {
             _TankGun.Fire();
         }

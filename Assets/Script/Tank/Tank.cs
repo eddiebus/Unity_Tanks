@@ -25,7 +25,8 @@ public class AI_TankMoveTo : AITask
             NavMesh.CalculatePath(_Caller.transform.position, _TargetPosition,
             NavMesh.AllAreas, NavPath);
         }
-        catch{
+        catch
+        {
             Debug.LogWarning($"NavMesh returned invalid Vector Position");
             this._State = AITaskState.Failed;
         }
@@ -132,13 +133,13 @@ public class Tank : MonoBehaviour
         _TankInit();
     }
 
-    void Update(){
+    void Update()
+    {
         _TurnTurrets();
-        
     }
     protected void _TankInit()
     {
-        _RigidBody = GetComponent<Rigidbody>();
+        _RigidBody = GetComponentInChildren<Rigidbody>();
 
         var Collider = GetComponent<Collider>();
         if (Collider)
@@ -151,6 +152,7 @@ public class Tank : MonoBehaviour
             phyMat.frictionCombine = PhysicMaterialCombine.Maximum;
             Collider.material = phyMat;
         }
+
     }
 
     private void _SetRidigBody()
@@ -166,23 +168,23 @@ public class Tank : MonoBehaviour
         if (!_RigidBody) return;
         _SetRidigBody();
         var floorFinder = new FloorFinder(_RigidBody);
-        var MoveVector = Vector3.ClampMagnitude( TargetPos - this.transform.position,1.0f);
+        var MoveVector = Vector3.ClampMagnitude(TargetPos - _RigidBody.transform.position, 1.0f);
         MoveVector.y = 0;
 
         Vector3 TrueMove = Vector3.ProjectOnPlane(MoveVector, floorFinder.FloorNormal);
 
-        _RigidBody.MovePosition(this.transform.position + (TrueMove * Mathf.Abs(MoveSpeed) * (Time.deltaTime * 5.0f)));
+        _RigidBody.MovePosition(_RigidBody.transform.position + (TrueMove * Mathf.Abs(MoveSpeed) * (Time.deltaTime * 5.0f)));
 
         if (MoveVector != Vector3.zero)
         {
-            
+
             Quaternion TargetBodyRot = Quaternion.RotateTowards(
                 _RigidBody.rotation,
                 Quaternion.LookRotation(MoveVector, floorFinder.FloorNormal),
                 TurnSpeed * (Time.deltaTime * 100)
             );
 
-            transform.rotation = TargetBodyRot ;
+            TurnBodyTo(TargetPos);
 
             TurretAimControl.transform.position = AimPoint;
         }
@@ -191,18 +193,20 @@ public class Tank : MonoBehaviour
     public void AimAt(Vector3 Target)
     {
         AimPoint = Target;
-        _TargetTurretQuat = Quaternion.LookRotation(AimPoint - transform.position);
+        _TargetTurretQuat = Quaternion.LookRotation(AimPoint - _RigidBody.transform.position);
     }
 
-    protected void _UpdateRig(){
-        var ControlPos = (_TurretQuat * Vector3.forward * (AimPoint - transform.position).magnitude) + this.transform.position;
-        TurretAimControl.transform.position = ControlPos;
+    protected void _UpdateRig()
+    {
+        TurretAimControl.transform.position = AimPoint;
     }
 
-    public void TurnBodyTo(Vector3 TargetPos){
-        var relVector = TargetPos = transform.position;
+    public void TurnBodyTo(Vector3 TargetPos)
+    {
+        var relVector = TargetPos - _RigidBody.transform.position;
 
-        if (relVector != Vector3.zero){
+        if (relVector != Vector3.zero)
+        {
             var floorFinder = new FloorFinder(_RigidBody);
             Quaternion TargetBodyRot = Quaternion.RotateTowards(
                 _RigidBody.rotation,
@@ -216,17 +220,16 @@ public class Tank : MonoBehaviour
 
     protected void _TurnTurrets()
     {
-        Quaternion TargetQuat = Quaternion.LookRotation(AimPoint - transform.position);
+        Quaternion TargetQuat = Quaternion.LookRotation(AimPoint - _RigidBody.transform.position);
         _TurretQuat = Quaternion.RotateTowards(_TurretQuat, TargetQuat, TurretTurnSpeed * (Time.deltaTime * 100.0f));
 
-
-        var ControlPos = (_TurretQuat * Vector3.forward * (AimPoint - transform.position).magnitude) + this.transform.position;
-        TurretAimControl.transform.position = ControlPos;
+        _UpdateRig();
     }
 
-    public Quaternion GetTurretAimDelta(){
+    public Quaternion GetTurretAimDelta()
+    {
         var TargetQuat = Quaternion.LookRotation(
-            AimPoint - transform.position
+            AimPoint - _RigidBody.transform.position
         );
 
         Quaternion c = TargetQuat * Quaternion.Inverse(_TurretQuat);
@@ -235,11 +238,13 @@ public class Tank : MonoBehaviour
     }
 
 
-    public RigidBodyBounds GetRigidbodyBounds(){
+    public RigidBodyBounds GetRigidbodyBounds()
+    {
         return new RigidBodyBounds(_RigidBody);
     }
 
-    void OnDrawGizmos(){
+    void OnDrawGizmos()
+    {
         GetRigidbodyBounds().DrawDebugGizmos();
     }
 

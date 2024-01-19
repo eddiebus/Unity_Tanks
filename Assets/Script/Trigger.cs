@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Trigger : MonoBehaviour
 {
+    public bool Active;
+    
     public virtual void Toggle(bool on){
 
     }
