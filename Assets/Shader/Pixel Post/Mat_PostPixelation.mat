@@ -34,7 +34,7 @@ Material:
     m_Ints:
     - _Pixels: 1000
     m_Floats:
-    - _OutlineLength: 2
-    - _Pixels: 2500
+    - _OutlineLength: 1
+    - _Pixels: 4000
     m_Colors: []
   m_BuildTextureStacks: []
