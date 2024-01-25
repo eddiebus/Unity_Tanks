@@ -30,7 +30,6 @@ public class Character : MonoBehaviour
     public void Damage(float Ammount)
     {
         Health -= Ammount;
-
         if (DamageSFX.Length > 0)
         {
             var selectIndex = (int)Mathf.Round(
@@ -55,7 +54,6 @@ public class Character : MonoBehaviour
                 returnList.Add(obj);
             }
         }
-
         return returnList.ToArray();
     }
 

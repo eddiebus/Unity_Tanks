@@ -145,6 +145,7 @@ public class PlayerCon
                     }
 
                     _AimVector = (_mouse.delta.ReadValue() * 1.0f) / 20;
+                    _AimPoint += _mouse.delta.ReadValue() * 0.02f * Time.deltaTime;
                     break;
                 }
             case PlayerConState.Gamepad:

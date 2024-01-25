@@ -81,7 +81,6 @@ public class Bullet : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         var OwnerBody = other.attachedRigidbody;
-
         // Colliding Rigidbody. Check for character
         if (OwnerBody)
         {

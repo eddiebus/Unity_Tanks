@@ -6,7 +6,11 @@ public class RailCamera : MonoBehaviour
 {
     public Transform ParentObj;
     public LayerMask SightMask;
+    public Material PostProcessEffect;
+    public PostShaderSetup ShaderSetup;
     public Camera _CameraComponent;
+    public Camera CameraComponent => _CameraComponent;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -58,7 +62,6 @@ public class RailCamera : MonoBehaviour
                 }
             }
         }
-        Debug.Log($"Hit List = {HitList.Count} | {RayHits.Length}");
 
         // No Hits used default point
         if (HitList.Count == 0)
@@ -76,6 +79,17 @@ public class RailCamera : MonoBehaviour
                     ClosestPoint = hit;
             }
             return ClosestPoint.point;
+        }
+    }
+
+    void OnRenderImage(RenderTexture src, RenderTexture dest)
+    {
+        if (!PostProcessEffect) return;
+        else
+        {
+            PostProcessEffect.SetInt("_Pixels", ShaderSetup.Pixels);
+            PostProcessEffect.SetFloat("_OutlineLength", ShaderSetup.OutlineSize);
+            Graphics.Blit(src, dest, PostProcessEffect);
         }
     }
 }
