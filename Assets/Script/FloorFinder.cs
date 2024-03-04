@@ -4,25 +4,29 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Animations;
 
-public class FloorFinder
+public class RigidBodyFloor
 {
     private Rigidbody _Rigidbody;
     public Vector3 FloorNormal;
-    public bool IsOnFloor;
+    public Vector3 FloorForward;
+    public Vector3 FloorRight;
+    public bool _OnFloor;
 
-    public FloorFinder(Rigidbody parent)
+    public bool OnFloor => _OnFloor;
+
+    public RigidBodyFloor(Rigidbody parent)
     {
         _Rigidbody = parent;
-        Update();
+        _GetValue();
     }
 
-    public void Update()
+    public void _GetValue()
     {
 
         Vector3 resultNormal = Vector3.up;
         var bodyTransform = _Rigidbody.gameObject.transform;
         var bodyBounds = new RigidBodyBounds(_Rigidbody);
-        var _DownDisVector = bodyBounds.Bounds.extents.y * 1.5f;
+        var _DownDisVector = bodyBounds.Bounds.extents.y * 1.2f;
 
         Ray HitRay = new Ray(
             bodyTransform.position,
@@ -48,7 +52,7 @@ public class FloorFinder
 
         if (HitToList.Count > 0)
         {
-            IsOnFloor = true;
+            _OnFloor = true;
             RaycastHit cloestestHit = Hits[0];
             foreach (var hit in HitToList)
             {
@@ -62,10 +66,29 @@ public class FloorFinder
         }
         else
         {
-            IsOnFloor = false;
+            _OnFloor = false;
         }
 
         FloorNormal = resultNormal;
+
+        FloorForward = Vector3.Cross(FloorNormal,-Vector3.right);
+        FloorRight = Vector3.Cross(FloorNormal,Vector3.forward);
     }
 
+    public void DrawDebugGizmo(){
+
+        var bodyBounds = new RigidBodyBounds(_Rigidbody);
+        var lineLength = bodyBounds.Bounds.size.magnitude; 
+
+        // Draw Normal Line
+        Gizmos.color = Color.blue;
+        Gizmos.DrawLine(_Rigidbody.position, _Rigidbody.position + FloorNormal * lineLength);
+
+        // Draw floor Plane
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(_Rigidbody.position, _Rigidbody.position + FloorForward * lineLength);
+        Gizmos.DrawLine(_Rigidbody.position, _Rigidbody.position + FloorRight * lineLength);
+        Gizmos.DrawLine(_Rigidbody.position, _Rigidbody.position - FloorForward * lineLength);
+        Gizmos.DrawLine(_Rigidbody.position, _Rigidbody.position - FloorRight * lineLength);
+    }
 }

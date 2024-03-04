@@ -1,9 +1,10 @@
 using System;
 using System.Linq;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Animations;
+using UnityEngine.Animations.Rigging;
 
 
 public class AI_TankMoveTo : AITask
@@ -115,10 +116,13 @@ public class AI_TankMoveTo : AITask
 
 public class Tank : MonoBehaviour
 {
+    public Vector3 TankPosition => _TankRigidBody.position;
     public float MoveSpeed = 5.0f;
     public float TurnSpeed = 10.0f;
     public float TurretTurnSpeed = 1.0f;
-    protected Rigidbody _RigidBody;
+    protected Rigidbody _TankRigidBody;
+    protected Vector3 _RecentVelocity;
+
 
     private Vector3 AimPoint;
     protected Quaternion _TurretQuat = Quaternion.identity;
@@ -127,19 +131,17 @@ public class Tank : MonoBehaviour
     // Obj turrets are rigged to aim at
     public GameObject TurretAimControl;
 
+    public MultiAimConstraint[] Rigconstraints;
+
     // Start is called before the first frame update
     void Start()
     {
         _TankInit();
     }
 
-    void Update()
-    {
-        _TurnTurrets();
-    }
     protected void _TankInit()
     {
-        _RigidBody = GetComponentInChildren<Rigidbody>();
+        _TankRigidBody = GetComponentInChildren<Rigidbody>();
 
         var Collider = GetComponent<Collider>();
         if (Collider)
@@ -152,48 +154,78 @@ public class Tank : MonoBehaviour
             phyMat.frictionCombine = PhysicMaterialCombine.Maximum;
             Collider.material = phyMat;
         }
+    }
 
+    void Update()
+    {
+        _TurnTurrets();
     }
 
     private void _SetRidigBody()
     {
-        if (!_RigidBody) return;
-        _RigidBody.isKinematic = false;
-        _RigidBody.useGravity = true;
-        _RigidBody.constraints = RigidbodyConstraints.FreezeRotation;
+        if (!_TankRigidBody) return;
+        _TankRigidBody.isKinematic = false;
+        _TankRigidBody.useGravity = true;
+        _TankRigidBody.constraints = RigidbodyConstraints.FreezeRotation;
     }
+
+    public void Move(Vector3 Direction)
+    {
+        if (_TankRigidBody)
+        {
+            _SetRidigBody();
+            var floorFinder = new RigidBodyFloor(_TankRigidBody);
+            var MoveVector = Vector3.ClampMagnitude(Direction, 1.0f);
+
+            // Project Vector on Movement Plane
+            MoveVector = Vector3.ProjectOnPlane(MoveVector, floorFinder.FloorNormal);
+            _TankRigidBody.MovePosition(_TankRigidBody.position + (MoveVector * Mathf.Abs(MoveSpeed) * (Time.deltaTime * 5.0f)));
+            _RecentVelocity = MoveVector;
+
+            if (MoveVector != Vector3.zero)
+            {
+                TurnBodyTo(_TankRigidBody.position + MoveVector);
+                TurretAimControl.transform.position = AimPoint;
+            }
+        }
+    }
+
 
     public void MoveTo(Vector3 TargetPos)
     {
-        if (!_RigidBody) return;
-        _SetRidigBody();
-        var floorFinder = new FloorFinder(_RigidBody);
-        var MoveVector = Vector3.ClampMagnitude(TargetPos - _RigidBody.transform.position, 1.0f);
-        MoveVector.y = 0;
+        float TargetVelocity = MoveSpeed * Time.deltaTime;
+        Vector3 DeltaVector = TargetPos - _TankRigidBody.position;
+        Vector3 moveVector = Vector3.ClampMagnitude(DeltaVector / TargetVelocity, 1.0f);
+        Move(moveVector);
+        // if (!_TankRigidBody) return;
+        // _SetRidigBody();
+        // var floorFinder = new RigidBodyFloor(_TankRigidBody);
+        // var MoveVector = Vector3.ClampMagnitude(TargetPos - _TankRigidBody.transform.position, 1.0f);
+        // MoveVector.y = 0;
 
-        Vector3 TrueMove = Vector3.ProjectOnPlane(MoveVector, floorFinder.FloorNormal);
+        // Vector3 TrueMove = Vector3.ProjectOnPlane(MoveVector, floorFinder.FloorNormal);
 
-        _RigidBody.MovePosition(_RigidBody.transform.position + (TrueMove * Mathf.Abs(MoveSpeed) * (Time.deltaTime * 5.0f)));
+        // _TankRigidBody.MovePosition(_TankRigidBody.transform.position + (TrueMove * Mathf.Abs(MoveSpeed) * (Time.deltaTime * 5.0f)));
 
-        if (MoveVector != Vector3.zero)
-        {
+        // if (MoveVector != Vector3.zero)
+        // {
 
-            Quaternion TargetBodyRot = Quaternion.RotateTowards(
-                _RigidBody.rotation,
-                Quaternion.LookRotation(MoveVector, floorFinder.FloorNormal),
-                TurnSpeed * (Time.deltaTime * 100)
-            );
+        //     Quaternion TargetBodyRot = Quaternion.RotateTowards(
+        //         _TankRigidBody.rotation,
+        //         Quaternion.LookRotation(MoveVector, floorFinder.FloorNormal),
+        //         TurnSpeed * (Time.deltaTime * 100)
+        //     );
 
-            TurnBodyTo(TargetPos);
+        //     TurnBodyTo(TargetPos);
 
-            TurretAimControl.transform.position = AimPoint;
-        }
+        //     TurretAimControl.transform.position = AimPoint;
+        // }
     }
 
     public void AimAt(Vector3 Target)
     {
         AimPoint = Target;
-        _TargetTurretQuat = Quaternion.LookRotation(AimPoint - _RigidBody.transform.position);
+        _TargetTurretQuat = Quaternion.LookRotation(AimPoint - _TankRigidBody.transform.position);
     }
 
     protected void _UpdateRig()
@@ -203,24 +235,24 @@ public class Tank : MonoBehaviour
 
     public void TurnBodyTo(Vector3 TargetPos)
     {
-        var relVector = TargetPos - _RigidBody.transform.position;
+        var relVector = TargetPos - _TankRigidBody.position;
 
         if (relVector != Vector3.zero)
         {
-            var floorFinder = new FloorFinder(_RigidBody);
+            var floorFinder = new RigidBodyFloor(_TankRigidBody);
             Quaternion TargetBodyRot = Quaternion.RotateTowards(
-                _RigidBody.rotation,
+                _TankRigidBody.rotation,
                 Quaternion.LookRotation(relVector, floorFinder.FloorNormal),
                 TurnSpeed * (Time.deltaTime * 100)
             );
 
-            _RigidBody.MoveRotation(TargetBodyRot);
+            _TankRigidBody.MoveRotation(TargetBodyRot);
         }
     }
 
     protected void _TurnTurrets()
     {
-        Quaternion TargetQuat = Quaternion.LookRotation(AimPoint - _RigidBody.transform.position);
+        Quaternion TargetQuat = Quaternion.LookRotation(AimPoint - _TankRigidBody.transform.position);
         _TurretQuat = Quaternion.RotateTowards(_TurretQuat, TargetQuat, TurretTurnSpeed * (Time.deltaTime * 100.0f));
 
         _UpdateRig();
@@ -229,7 +261,7 @@ public class Tank : MonoBehaviour
     public Quaternion GetTurretAimDelta()
     {
         var TargetQuat = Quaternion.LookRotation(
-            AimPoint - _RigidBody.transform.position
+            AimPoint - _TankRigidBody.transform.position
         );
 
         Quaternion c = TargetQuat * Quaternion.Inverse(_TurretQuat);
@@ -240,12 +272,29 @@ public class Tank : MonoBehaviour
 
     public RigidBodyBounds GetRigidbodyBounds()
     {
-        return new RigidBodyBounds(_RigidBody);
+        return new RigidBodyBounds(_TankRigidBody);
     }
 
+    protected void DrawTankGizmos()
+    {
+        if (_TankRigidBody)
+        {
+            GetRigidbodyBounds().DrawDebugGizmos();
+            var floorFinder = new RigidBodyFloor(_TankRigidBody);
+            floorFinder.DrawDebugGizmo();
+
+            var bodyBounds = new RigidBodyBounds(_TankRigidBody);
+
+            Gizmos.color = Color.green;
+            Gizmos.DrawLine(
+            _TankRigidBody.position,
+            _TankRigidBody.position + (_RecentVelocity * bodyBounds.Bounds.size.magnitude)
+            );
+        }
+    }
     void OnDrawGizmos()
     {
-        GetRigidbodyBounds().DrawDebugGizmos();
+        DrawTankGizmos();
     }
 
 

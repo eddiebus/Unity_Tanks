@@ -1,6 +1,5 @@
 using System;
 using Cinemachine;
-using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -49,25 +48,13 @@ public class GameCamera : MonoBehaviour
         if (Parent){
             PositionOffset = this.transform.position - Parent.position;
         }
+
         PositionOffset = this.transform.localPosition;
         LookAngle = this.transform.rotation.eulerAngles;
 
         _CamComp = transform.root.gameObject.GetComponentInChildren<Camera>();
         _VirtualCamComp = transform.root.gameObject.GetComponentInChildren<CinemachineVirtualCamera>();
     }
-
-
-    void OnRenderImage(RenderTexture src, RenderTexture dest)
-    {
-        if (!PostProcessEffect) return;
-        else
-        {
-            PostProcessEffect.SetInt("_Pixels", ShaderSetup.Pixels);
-            PostProcessEffect.SetFloat("_OutlineLength", ShaderSetup.OutlineSize);
-            Graphics.Blit(src, dest, PostProcessEffect);
-        }
-    }
-
 
     private void UpdateFov()
     {
@@ -155,12 +142,6 @@ public class GameCamera : MonoBehaviour
     public void SetMode(GameCameraMode newMode)
     {
         _cameraMode = newMode;
-    }
-
-    void Update()
-    {
-        UpdateFov();
-        BillboardObject.UpdateDirection(_CamComp);
     }
 
     void FixedUpdate()

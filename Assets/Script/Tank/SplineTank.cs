@@ -120,7 +120,7 @@ public class SplineTank : MonoBehaviour
         _Rigidbody.transform.position = GetProjectedPos();
 
         // Set Rotation
-        var floorfinder = new FloorFinder(_Rigidbody);
+        var floorfinder = new RigidBodyFloor(_Rigidbody);
         _Rigidbody.transform.rotation = Quaternion.LookRotation(GetTangent(),floorfinder.FloorNormal);
 
     }
@@ -147,7 +147,7 @@ public class SplineTank : MonoBehaviour
             _SplineDistance, PathIndexUnit.Distance, PathIndexUnit.Normalized);
             var splineTangent = GetTangent();
 
-            var floorfinder = new FloorFinder(_Rigidbody);
+            var floorfinder = new RigidBodyFloor(_Rigidbody);
             var rVector = Vector3.Cross(floorfinder.FloorNormal, splineTangent);
             return rVector;
         }
@@ -239,11 +239,37 @@ public class SplineTank : MonoBehaviour
         }
     }
 
+    protected void SplineTankDrawGizmo(){
+        if (_Rigidbody)
+        {
+            var floorfinder = new RigidBodyFloor(_Rigidbody);
+            var lineLength = 1.0f;
+
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(transform.position, transform.position + (GetTankRightVector() * lineLength));
+
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawLine(transform.position, transform.position + (floorfinder.FloorNormal * lineLength));
+
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawLine(_Rigidbody.transform.position, _Rigidbody.transform.position + GetTangent());
+
+
+
+            if (_Rigidbody)
+            {
+                Gizmos.color = Color.white;
+                var bounds = new RigidBodyBounds(_Rigidbody);
+                Gizmos.DrawWireCube(_Rigidbody.transform.position, bounds.Bounds.extents);
+            }
+
+        }
+    }
     void OnDrawGizmos()
     {
         if (_Rigidbody)
         {
-            var floorfinder = new FloorFinder(_Rigidbody);
+            var floorfinder = new RigidBodyFloor(_Rigidbody);
             var lineLength = 1.0f;
 
             Gizmos.color = Color.red;

@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net.WebSockets;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Bullet : MonoBehaviour
@@ -32,7 +31,7 @@ public class Bullet : MonoBehaviour
     protected void _ConfigRigidBody()
     {
         var body = GetComponent<Rigidbody>();
-        if (!body) body = this.AddComponent<Rigidbody>();
+        if (!body) body = this.gameObject.AddComponent<Rigidbody>();
         _RigidBody = body;
 
         body.isKinematic = true;

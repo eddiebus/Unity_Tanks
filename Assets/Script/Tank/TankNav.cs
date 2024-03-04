@@ -7,7 +7,7 @@ using UnityEngine.Splines;
 public class EnemyTankNav : MonoBehaviour
 {
     public SplineTank _Tank;
-    public PlayerTank _PlayerTank;
+    public PlayerSplineTank _PlayerTank;
 
     public SplineContainer _SplineContainer;
     public Vector2 TargetRelativePosition;
@@ -16,7 +16,7 @@ public class EnemyTankNav : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _PlayerTank = PlayerTank.GetInstance();
+        _PlayerTank = PlayerSplineTank.GetInstance();
     }
 
     // Update is called once per frame

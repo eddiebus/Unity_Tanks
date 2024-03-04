@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 4254507545038958780}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.6, y: 0.739, z: 2.48}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -73,11 +73,11 @@ MonoBehaviour:
       m_Item7:
         transform: {fileID: 0}
         weight: 0
-    m_Offset: {x: 0, y: 0, z: 0}
+    m_Offset: {x: 0, y: 0, z: -90}
     m_MinLimit: -180
     m_MaxLimit: 180
-    m_AimAxis: 2
-    m_UpAxis: 2
+    m_AimAxis: 0
+    m_UpAxis: 4
     m_WorldUpType: 1
     m_WorldUpObject: {fileID: 0}
     m_WorldUpAxis: 2
@@ -216,10 +216,12 @@ GameObject:
   - component: {fileID: 3850287535010353463}
   - component: {fileID: 6172031072376123171}
   - component: {fileID: 2513151036589435536}
-  - component: {fileID: 5104223847754833516}
   - component: {fileID: 4472881609075134975}
   - component: {fileID: 4380742518705820325}
   - component: {fileID: 3190262011701563635}
+  - component: {fileID: 8751783301557051503}
+  - component: {fileID: 7244091652124550150}
+  - component: {fileID: 8582799860102278914}
   m_Layer: 0
   m_Name: Tank
   m_TagString: Untagged
@@ -257,6 +259,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ThinkTime: 0.5
   _Tank: {fileID: 0}
+  _TankNav: {fileID: 0}
+  _Sense: {fileID: 0}
   _EnemyComp: {fileID: 0}
   FireRange: 6
 --- !u!114 &2513151036589435536
@@ -282,23 +286,6 @@ MonoBehaviour:
   OnDestroy:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &5104223847754833516
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6226814813821045841}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1c9d078259752a64ea41d8589a136e1d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _SplineContainer: {fileID: 0}
-  AimRigControl: {fileID: 0}
-  MoveSpeed: 1
-  TurretTurnSpeed: 0
-  _Guns: []
 --- !u!114 &4472881609075134975
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -358,6 +345,61 @@ MonoBehaviour:
   m_IgnoreFromBuild: 1
   m_ApplyToChildren: 1
   m_AffectedAgents: ffffffff
+--- !u!114 &8751783301557051503
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6226814813821045841}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a105ceea16ea0ee42aa0f6e98f5f88be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _PathIndex: 0
+  _TargetPos: {x: 0, y: 0, z: 0}
+  _Status: 0
+  _OwnerTank: {fileID: 0}
+--- !u!114 &7244091652124550150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6226814813821045841}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73be1ce1943335b449ebe79a8a71acfe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MoveSpeed: 0.2
+  TurnSpeed: 10
+  TurretTurnSpeed: 1
+  TurretAimControl: {fileID: 8228082465759245680}
+  Rigconstraints: []
+--- !u!114 &8582799860102278914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6226814813821045841}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e66b3eff15c71941ba718e2a91b8bbe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UpdateTime: 0.5
+  SightDistance: 3.88
+  SightRadius: 100
+  HearingRadius: 5
+  CurrentStimuli: []
+  Eyes:
+  - Point: {fileID: 6964282058392328433}
+    RotationOffset: {x: -90, y: 0, z: 0}
+  - Point: {fileID: 5186164781976001891}
+    RotationOffset: {x: -90, y: 0, z: 0}
 --- !u!1 &7477609042929339300
 GameObject:
   m_ObjectHideFlags: 0
@@ -494,7 +536,7 @@ Transform:
   m_GameObject: {fileID: 8448961362846292750}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.032580256, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -551,27 +593,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8153297758796220734, guid: 76fc52dd24b0d6249b2a07d0710eeeab, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -0.000019447985
+      value: -0.00001852687
       objectReference: {fileID: 0}
     - target: {fileID: -8153297758796220734, guid: 76fc52dd24b0d6249b2a07d0710eeeab, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0.00005791576
+      value: 0.00005860165
       objectReference: {fileID: 0}
     - target: {fileID: -8153297758796220734, guid: 76fc52dd24b0d6249b2a07d0710eeeab, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: -8.780837e-12
+      value: -6.850115e-12
       objectReference: {fileID: 0}
     - target: {fileID: -5518612407074146287, guid: 76fc52dd24b0d6249b2a07d0710eeeab, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0.00002310198
+      value: 0.000024732515
       objectReference: {fileID: 0}
     - target: {fileID: -5518612407074146287, guid: 76fc52dd24b0d6249b2a07d0710eeeab, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -0.000026892889
+      value: -0.000027689883
       objectReference: {fileID: 0}
     - target: {fileID: -5518612407074146287, guid: 76fc52dd24b0d6249b2a07d0710eeeab, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0.000012509557
+      value: 0.000013114056
       objectReference: {fileID: 0}
     - target: {fileID: -2709469275740268284, guid: 76fc52dd24b0d6249b2a07d0710eeeab, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -583,7 +625,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1456667670652124547, guid: 76fc52dd24b0d6249b2a07d0710eeeab, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 2.1893034e-12
+      value: 1.7079215e-12
       objectReference: {fileID: 0}
     - target: {fileID: 1456667670652124547, guid: 76fc52dd24b0d6249b2a07d0710eeeab, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y

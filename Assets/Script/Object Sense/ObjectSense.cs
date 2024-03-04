@@ -16,7 +16,6 @@ public sealed class ObjectSense : MonoBehaviour
 {
     [Range(0.1f, 3.0f)]
     public float UpdateTime = 0.5f;
-    public float EyeHeight = 0.5f;
     public float SightDistance;
     [Range(0.0f, 180.0f)]
     public float SightRadius;
@@ -25,8 +24,6 @@ public sealed class ObjectSense : MonoBehaviour
 
     private float _TimeTillUpdate;
     public List<ObjectStimuli> CurrentStimuli;
-
-    public List<Transform> EyePoints;
 
     public List<ObjectSenseEye> Eyes;
 
@@ -48,11 +45,6 @@ public sealed class ObjectSense : MonoBehaviour
             _TimeTillUpdate = UpdateTime;
         }
 
-    }
-
-    private Vector3 GetEyePoint()
-    {
-        return transform.position + (transform.up * EyeHeight);
     }
 
     public List<ObjectStimuli> GetStimuliWithTag(StimuliTag TargetTag)
@@ -105,13 +97,8 @@ public sealed class ObjectSense : MonoBehaviour
                         }
                     case ObjectStimuliType.Vision:
                         {
-                            List<Transform> eyePoints = new List<Transform>(EyePoints);
-
-
+                            List<ObjectSenseEye> eyePoints = new List<ObjectSenseEye>(Eyes);
                             bool ToAdd = false;
-
-                            //Loop eyePoints
-                            // Check if Stimuli is visible under eye
                             foreach (var eye in Eyes)
                             {
                                 var TrueEyeRotation = eye.Point.rotation * Quaternion.Euler(eye.RotationOffset);
@@ -159,13 +146,6 @@ public sealed class ObjectSense : MonoBehaviour
         if (SelectObj != this.gameObject && !SelectObj.transform.IsChildOf(this.gameObject.transform)) return;
 
         List<ObjectSenseEye> eyePoints = new List<ObjectSenseEye>(Eyes);
-        if (EyePoints.Count == 0)
-        {
-            var defaultEye = new ObjectSenseEye();
-            defaultEye.Point = transform;
-            defaultEye.RotationOffset = Vector3.zero;
-            eyePoints.Add(defaultEye);
-        }
 
         foreach (var eye in Eyes)
         {

@@ -136,10 +136,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Health: 1
   CharacterTag: 'Enemy '
-  EyeHeight: 0.5
-  VisionDistance: 20
-  LookRadius: 90
-  PlayerVisionTime: 0
+  DamageSFX: []
+  OnDestroy:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &6313542010819337459
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -152,8 +152,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34b202a9e1ace02438b86d13f06e4fbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ThinkTime: 0.5
   _Tank: {fileID: 0}
-  _Sense: {fileID: 0}
   _EnemyComp: {fileID: 0}
   FireRange: 7
 --- !u!114 &1862063602843682354
@@ -172,6 +172,7 @@ MonoBehaviour:
   TurnSpeed: 1.7
   TurretTurnSpeed: 1
   TurretAimControl: {fileID: 1838346782725491620}
+  Rigconstraints: []
 --- !u!114 &115237874039611300
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -235,13 +236,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UpdateTime: 0.37
   EyeHeight: 0.5
-  SightDistance: 10
-  SightRadius: 90
+  SightDistance: 8.81
+  SightRadius: 78.5
   HearingRadius: 5
   CurrentStimuli: []
-  EyePoints:
-  - {fileID: 2307513844620335185}
-  - {fileID: 8386821482418797649}
+  EyePoints: []
+  Eyes:
+  - Point: {fileID: 0}
+    RotationOffset: {x: 0, y: 0, z: 0}
+  - Point: {fileID: 0}
+    RotationOffset: {x: 0, y: 0, z: 0}
 --- !u!1001 &1849095079770308183
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -425,8 +429,3 @@ AimConstraint:
   m_Sources:
   - sourceTransform: {fileID: 5963539858015024576}
     weight: 1
---- !u!4 &8386821482418797649 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -1312034450320768506, guid: 24e97c44d8073144e89de16ae2ef545f, type: 3}
-  m_PrefabInstance: {fileID: 1849095079770308183}
-  m_PrefabAsset: {fileID: 0}

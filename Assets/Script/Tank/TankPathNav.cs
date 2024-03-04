@@ -40,7 +40,6 @@ public class TankPathNav : PathNav
                 _OwnerTank.MoveTo(NextPoint);
             }
 
-
             if (_PathIndex >= (_Path.corners.Length) ){
                 _Status = PathNavStatus.Completed;
             }

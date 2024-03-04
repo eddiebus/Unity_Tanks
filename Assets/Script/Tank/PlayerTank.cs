@@ -1,86 +1,58 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
-using UnityEngine.Splines;
 
-
-public class PlayerTank : SplineTank
+public class PlayerTank : Tank
 {
-    public Transform CameraJoint;
-    public RailCamera railCamera;
+    public GameCamera _Camera;
 
+    // Start is called before the first frame update
     void Start()
     {
         _TankInit();
     }
 
-    void Update()
+
+    void Update(){
+        _HandleAim();
+        _TurnTurrets();
+        AimAt(_Camera.GetWorldAimPoint());
+    }
+
+    // Update is called once per frame
+    void FixedUpdate()
     {
-        _SetRidigBody();
-        _FixPosition();
-        _TurnTurret();
-        _SetCameraJointPosition();
-        AimAt(railCamera.GetWorldAimPoint());
-        if (PlayerCon.GetController(0).Fire > 0)
-        {
-            _Guns[0].Fire();
-
-        }
-
-        _TrackWidth = GetTrackWidth();
-
-        Move(
-            new Vector2(PlayerCon.GetController(0).MoveVector.x, 1.0f)
-            );
+        _HandleMoveMent();   
     }
 
-    // Get 1st Instance of Component
-    public static PlayerTank GetInstance(){
-        return GameObject.FindFirstObjectByType<PlayerTank>();
+    private void _HandleMoveMent(){
+        var controller = PlayerCon.GetController(0);
+        var CamRotation = Quaternion.Euler( 
+            0,
+            _Camera.GetRotation().eulerAngles.y,
+            0);
+        
+        var MoveVector = new Vector3 (
+            controller.MoveVector.x,
+            0,
+            controller.MoveVector.y
+        );
+
+        MoveVector = CamRotation * MoveVector;
+        Move(MoveVector);
+
     }
 
-    private void _SetCameraJointPosition(){
-        var rigidBounds = new RigidBodyBounds(_Rigidbody);
-        Vector3 backVector = -GetTangent().normalized;
-
-        Vector3 CamPos = GetSplineWorldPosition() + 
-        (backVector * (rigidBounds.Bounds.extents.magnitude * 0.3f) ) +
-        Vector3.up * 1.1f;
-
-        CameraJoint.position = CamPos;
-        CameraJoint.rotation = Quaternion.LookRotation(GetTangent());
+    private void _HandleAim(){
+        if (_Camera){
+            var cvontroller = PlayerCon.GetController(0);
+            _Camera.Rotate(cvontroller.AimVector);
+        }
     }
 
-    // Get the horizontal space for movement
-    public float GetTrackWidth()
-    {
-        if (!railCamera)
-        {
-            return 3.0f;
-        }
-        else
-        {
-            var myPosition = _Rigidbody.transform.position;
-            var CamPos = railCamera.transform.position;
-            myPosition.y = CamPos.y;
 
-            var posDistance = (myPosition - CamPos).magnitude;
-
-            Vector3[] ViewportPoints = {
-                new Vector3(0.0f,0.5f,posDistance),
-                new Vector3(1.0f,0.5f,posDistance)
-            };
-
-            Vector3[] WorldPoints = {
-                railCamera._CameraComponent.ViewportToWorldPoint(
-                    ViewportPoints[0]
-                ),
-                railCamera._CameraComponent.ViewportToWorldPoint(
-                    ViewportPoints[1]
-                )
-            };
-
-            return (WorldPoints[0] - WorldPoints[1]).magnitude * 1.5f;
-        }
+    void OnDrawGizmos(){
+        DrawTankGizmos();
     }
 }

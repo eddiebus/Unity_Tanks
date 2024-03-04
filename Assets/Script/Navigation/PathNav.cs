@@ -14,9 +14,9 @@ public enum PathNavStatus{
 public class PathNav : MonoBehaviour
 {
     protected NavMeshPath _Path; // Path to be moved along
-    protected int _PathIndex; //Index To be Walked To
-    protected Vector3 _TargetPos; // Target End Position
-    protected PathNavStatus _Status;
+    public int _PathIndex; //Index To be Walked To
+    public Vector3 _TargetPos; // Target End Position
+    public PathNavStatus _Status;
 
     public PathNavStatus Status => _Status;
 
@@ -49,6 +49,7 @@ public class PathNav : MonoBehaviour
             _Status = PathNavStatus.Completed;
         }
     }
+    
     public virtual void GetStatus(){
         
     }
